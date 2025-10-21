@@ -1,0 +1,2784 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM система - Центр "Радуга"</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .crm-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 1rem;
+        }
+        
+        .role-owner {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #333;
+        }
+        
+        .role-admin {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            border-left: 5px solid;
+        }
+        
+        .stat-card.revenue { border-left-color: #27ae60; }
+        .stat-card.clients { border-left-color: #3498db; }
+        .stat-card.bookings { border-left-color: #e74c3c; }
+        .stat-card.staff { border-left-color: #f39c12; }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #000000;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .crm-tabs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .crm-tabs button {
+            aspect-ratio: 1;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            line-height: 1.2;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .crm-tabs button i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .crm-tabs button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .crm-tabs button.btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            color: white !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        .crm-tabs button.btn-secondary {
+            background: #f8f9fa !important;
+            color: #333 !important;
+            border: 2px solid #e9ecef !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        .crm-tabs button.btn-secondary:hover {
+            background: #667eea !important;
+            color: white !important;
+            border-color: #667eea !important;
+        }
+        
+        .access-management {
+            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,237,78,0.1));
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .access-management h3 {
+            color: #b8860b;
+            margin-bottom: 1rem;
+        }
+        
+        .user-list {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .user-info h4 {
+            margin: 0 0 0.25rem 0;
+            color: #333;
+        }
+        
+        .user-info p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .client-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        
+        .client-card h4 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+            font-weight: 700;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.08);
+        }
+        
+        .client-card p {
+            margin: 0.25rem 0;
+            color: #666;
+        }
+        
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .clients-table-container {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        .clients-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        
+        .clients-table th,
+        .clients-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            white-space: nowrap;
+        }
+        
+        .clients-table th {
+            background: #f8f9fa;
+            font-weight: 700;
+            color: #333;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .clients-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .clients-table .client-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .clients-table .phone-number {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .clients-table .amount {
+            font-weight: 700;
+            color: #28a745;
+        }
+        
+        .clients-table .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .clients-table .btn-action {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+        }
+        
+        .clients-table .btn-action.view {
+            background: #007bff;
+            color: white;
+        }
+        
+        .clients-table .btn-action.view:hover {
+            background: #0056b3;
+        }
+        
+        .clients-table .btn-action.message {
+            background: #e83e8c;
+            color: white;
+        }
+        
+        .clients-table .btn-action.message:hover {
+            background: #c62d6b;
+        }
+        
+        .client-details {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .detail-section {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .detail-section h3 {
+            margin: 0 0 1rem 0;
+            color: #333;
+            font-size: 1.1rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+        
+        .child-info {
+            background: white;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .purchases-table {
+            overflow-x: auto;
+        }
+        
+        /* Простой и чистый дизайн */
+        .simple-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin: 0 auto 2rem auto;
+            max-width: 1200px;
+        }
+        
+        .simple-section h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 2rem 0;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 1rem;
+        }
+        
+        .clients-table-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: none;
+            border: 1px solid #e0e0e0;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        
+        .clients-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+            max-width: 100%;
+        }
+        
+        .clients-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .clients-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+        }
+        
+        .clients-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .clients-table .client-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .clients-table .phone-number {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .clients-table .amount {
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+        }
+        
+        .clients-table .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .clients-table .btn-action {
+            background: #007bff;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            color: white;
+        }
+        
+        .clients-table .btn-action:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+        
+        /* Отступы для контейнера в разделе клиентов */
+        #clientsTab.active ~ * .container,
+        #clientsTab.active .container {
+            border-top-width: 30px;
+            padding-top: 40px;
+        }
+        
+        .records-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .records-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .records-table th,
+        .records-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .records-table th {
+            background: #f8f9fa;
+            font-weight: 700;
+            color: #333;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+        }
+        
+        .status-confirmed {
+            color: #27ae60;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            color: #f39c12;
+            font-weight: 600;
+        }
+        
+        .recent-activities {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .recent-activities h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            margin-right: 1rem;
+            color: #667eea;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-content p {
+            margin: 0 0 0.25rem 0;
+            color: #333;
+        }
+        
+        .activity-time {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .dashboard-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .dashboard-section h2 {
+            font-weight: 700;
+            color: #333;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+        
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .analytics-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        
+        .analytics-card h4 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 0.5rem;
+            font-weight: 700;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+        }
+        
+        .finance-summary {
+            margin-bottom: 2rem;
+        }
+        
+        .finance-card.main {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+        }
+        
+        .revenue-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+        
+        .service-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+        
+        .service-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .service-amount {
+            font-weight: 700;
+            color: #27ae60;
+        }
+        
+        .services-list {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .schedule-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .schedule-day {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .schedule-day h4 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+        
+        .appointment-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        
+        .appointment-item.confirmed {
+            background: #f8fff8;
+            border-left-color: #27ae60;
+        }
+        
+        .appointment-item.pending {
+            background: #fff9f0;
+            border-left-color: #f39c12;
+        }
+        
+        .appointment-time {
+            font-weight: 700;
+            min-width: 80px;
+            color: #667eea;
+        }
+        
+        .appointment-details {
+            flex: 1;
+            margin-left: 1rem;
+        }
+        
+        .status-badge {
+            float: right;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-badge.confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .messages-center {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .message-stats, .quick-message {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .quick-message-form .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .quick-message-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .quick-message-form input,
+        .quick-message-form textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .quick-message-form input:focus,
+        .quick-message-form textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        /* Админские стили */
+        .admin-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .booking-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .booking-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-success {
+            background: #27ae60 !important;
+            color: white !important;
+            border: none !important;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);
+            transition: all 0.3s ease;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        .btn-success:hover {
+            background: #229954 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.4);
+        }
+        
+        .btn-danger {
+            background: #e74c3c !important;
+            color: white !important;
+            border: none !important;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+            transition: all 0.3s ease;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.4);
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .calendar-day {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .appointment-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            margin: 0.25rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+        
+        .appointment-badge.confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .appointment-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .lessons-stats, .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-item, .report-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .whatsapp-center, .payment-center {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .daily-report .report-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .report-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .permissions-section {
+            margin: 1.5rem 0;
+        }
+        
+        .permissions-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .permission-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .permission-item:hover {
+            background: #e9ecef;
+        }
+        
+        .permission-item input[type="checkbox"] {
+            margin-right: 0.75rem;
+            transform: scale(1.2);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+        
+        /* Структура без боковой панели */
+        .main-content-wrapper {
+            display: block;
+            margin-top: 2rem;
+        }
+        
+        .crm-content-main {
+            width: 100%;
+        }
+        
+        .access-management-sidebar {
+            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,237,78,0.1));
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+        
+        .access-management-sidebar h3 {
+            color: #b8860b;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        /* Скрываем для не-владельцев */
+        .access-management-sidebar.hidden {
+            display: none;
+        }
+        
+        /* Все секции скрыты по умолчанию */
+        .crm-section {
+            display: none;
+        }
+        
+        .crm-section.active {
+            display: block;
+        }
+        
+        /* Стили для управления сотрудниками */
+        .staff-management {
+            padding: 1rem;
+        }
+        
+        .management-actions {
+            margin-bottom: 2rem;
+            text-align: right;
+        }
+        
+        .staff-list h4 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .staff-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+        
+        .staff-info h4 {
+            margin-top: 0;
+            color: #333;
+            font-weight: 700;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.08);
+            font-size: 1.2rem;
+        }
+        
+        .staff-info p {
+            margin: 0.5rem 0;
+            color: #666;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        
+        .status-active {
+            color: #27ae60;
+            font-weight: 600;
+        }
+        
+        .staff-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .staff-actions .btn-secondary {
+            background: #667eea !important;
+            color: white !important;
+            border: none !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            font-weight: 600;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+        }
+        
+        .staff-actions .btn-secondary:hover {
+            background: #5a6fd8 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+        }
+        
+        .staff-actions .btn-danger {
+            background: #e74c3c !important;
+            color: white !important;
+            border: none !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>🌈 Центр "Радуга" - CRM</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-link" id="userName">Пользователь</span>
+                    <span id="userRole" class="role-badge">Роль</span>
+                </li>
+                <li class="nav-item">
+                    <button class="btn-secondary" onclick="logout()">Выйти</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <div class="dashboard-layout">
+            <!-- Боковое меню -->
+            <div class="sidebar">
+                <div class="sidebar-menu" id="crmSidebar">
+                    <!-- Элементы меню будут добавлены динамически -->
+        </div>
+    </div>
+
+            <!-- Основной контент -->
+            <div class="main-content">
+        <div class="container">
+
+                    <!-- Основной контент -->
+            <div class="main-content-wrapper">
+                <!-- Контент CRM -->
+                <div id="crmContent" class="crm-content-main">
+                <!-- Дашборд -->
+                <div id="dashboardTab" class="crm-section">
+                    <div class="dashboard-section">
+                        <h2>Обзор системы</h2>
+                        <div class="recent-activities">
+                            <h3>Последние действия</h3>
+                            <div id="recentActivities">
+                                <!-- Активности будут загружены здесь -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Клиенты -->
+                <div id="clientsTab" class="crm-section">
+                    <div class="simple-section">
+                        <h1>Управление клиентами</h1>
+                        <div class="clients-table-container">
+                            <table class="clients-table" id="clientsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Клиент</th>
+                                        <th>Телефон</th>
+                                        <th>Последняя операция</th>
+                                        <th>Сумма</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clientsTableBody">
+                                    <!-- Данные клиентов будут загружены здесь -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Записи -->
+                <div id="bookingsTab" class="crm-section">
+                    <div class="dashboard-section">
+                        <h2>Управление записями</h2>
+                        <div class="records-table" id="recordsTable">
+                            <!-- Таблица записей будет загружена здесь -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Расписание -->
+                <div id="scheduleTab" class="crm-section">
+                    <div class="dashboard-section">
+                        <h2>Расписание занятий</h2>
+                        <div id="scheduleContent">
+                            <!-- Расписание будет загружено здесь -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Сообщения -->
+                <div id="messagesTab" class="crm-section">
+                    <div class="dashboard-section">
+                        <h2>Центр сообщений</h2>
+                        <div id="messagesContent">
+                            <!-- Сообщения будут загружены здесь -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Аналитика -->
+                <div id="analyticsTab" class="crm-section">
+                    <div class="dashboard-section">
+                        <h2>Аналитика и отчеты</h2>
+                        <div id="analyticsContent">
+                            <!-- Аналитика будет загружена здесь -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Финансы -->
+                <div id="financeTab" class="crm-section">
+                    <div class="dashboard-section">
+                        <h2>Финансовая отчетность</h2>
+                        <div id="financeContent">
+                            <!-- Финансы будут загружены здесь -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Админские секции -->
+                <!-- Запись ребенка -->
+                <div id="childBookingTab" class="crm-section">
+                    <div class="dashboard-section">
+                        <h2>Запись ребенка</h2>
+                        <div id="childBookingContent">
+                            <!-- Форма записи ребенка -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Подтверждение записи -->
+                <div id="confirmBookingTab" class="crm-section">
+                    <div class="dashboard-section">
+                        <h2>Подтверждение записей</h2>
+                        <div id="confirmBookingContent">
+                            <!-- Подтверждение записей -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Календарь записи -->
+                <div id="bookingCalendarTab" class="crm-section">
+                    <div class="dashboard-section">
+                        <h2>Календарь записи</h2>
+                        <div id="bookingCalendarContent">
+                            <!-- Календарь записи -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Уроки -->
+                <div id="lessonsTab" class="crm-section">
+                    <div class="dashboard-section">
+                        <h2>Уроки</h2>
+                        <div id="lessonsContent">
+                            <!-- Уроки -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Рассылка в WhatsApp -->
+                <div id="whatsappTab" class="crm-section">
+                    <div class="dashboard-section">
+                        <h2>Рассылка родителям</h2>
+                        <div id="whatsappContent">
+                            <!-- Рассылка в WhatsApp -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Прием оплаты -->
+                <div id="paymentTab" class="crm-section">
+                    <div class="dashboard-section">
+                        <h2>Прием оплаты</h2>
+                        <div id="paymentContent">
+                            <!-- Прием оплаты -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Отчет по деньгам за сегодня -->
+                <div id="dailyReportTab" class="crm-section">
+                    <div class="dashboard-section">
+                        <h2>Отчет за сегодня</h2>
+                        <div id="dailyReportContent">
+                            <!-- Отчет по деньгам за сегодня -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Управление сотрудниками -->
+                <div id="staffManagementTab" class="crm-section">
+                    <div class="dashboard-section">
+                        <h2>Управление сотрудниками</h2>
+                        <div id="staffManagementContent">
+                            <!-- Управление сотрудниками -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Управление доступами (скрыто, так как перенесено в основную навигацию) -->
+                <div id="accessManagement" class="access-management-sidebar" style="display: none !important;">
+                    <!-- <h3><i class="fas fa-users-cog"></i> Управление доступами</h3>
+                    <div class="user-list" id="userList">
+                        Список пользователей будет загружен здесь
+                    </div>
+                    <button class="btn-primary" onclick="openAddUserModal()">
+                        <i class="fas fa-plus"></i> Добавить пользователя
+                    </button> -->
+                </div>
+                </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления пользователя -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addUserModal')">&times;</span>
+            <h2>Добавить пользователя</h2>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label for="newUserType">Тип пользователя</label>
+                    <select id="newUserType" required>
+                        <option value="">Выберите тип</option>
+                        <option value="admin">Сотрудник</option>
+                        <option value="owner">Владелец</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="newUserName">Имя пользователя</label>
+                    <input type="text" id="newUserName" required>
+                </div>
+                <div class="form-group">
+                    <label for="newUserLogin">Логин</label>
+                    <input type="text" id="newUserLogin" required>
+                </div>
+                <div class="form-group">
+                    <label for="newUserPassword">Пароль</label>
+                    <input type="password" id="newUserPassword" required>
+                </div>
+                <button type="submit" class="btn-primary">Добавить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно редактирования прав пользователя -->
+    <div id="editUserModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editUserModal')">&times;</span>
+            <h2>Редактировать права доступа</h2>
+            <form id="editUserForm">
+                <div class="form-group">
+                    <label for="editUserLogin">Логин пользователя</label>
+                    <input type="text" id="editUserLogin" readonly>
+                </div>
+                
+                <div class="permissions-section">
+                    <h4>Права доступа сотрудника:</h4>
+                    <div class="permissions-list">
+                        <label class="permission-item">
+                            <input type="checkbox" id="perm_childBooking">
+                            Запись ребенка
+                        </label>
+                        <label class="permission-item">
+                            <input type="checkbox" id="perm_confirmBooking">
+                            Подтверждение записи
+                        </label>
+                        <label class="permission-item">
+                            <input type="checkbox" id="perm_bookingCalendar">
+                            Календарь записи
+                        </label>
+                        <label class="permission-item">
+                            <input type="checkbox" id="perm_lessons">
+                            Уроки
+                        </label>
+                        <label class="permission-item">
+                            <input type="checkbox" id="perm_whatsapp">
+                            Рассылка в WhatsApp
+                        </label>
+                        <label class="permission-item">
+                            <input type="checkbox" id="perm_payment">
+                            Прием оплаты
+                        </label>
+                        <label class="permission-item">
+                            <input type="checkbox" id="perm_dailyReport">
+                            Отчет по деньгам за сегодня
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-primary" onclick="saveUserPermissions()">Сохранить права</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('editUserModal')">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+            if (!currentUser || (currentUser.type !== 'admin' && currentUser.type !== 'owner')) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Отображаем информацию о пользователе
+            const userNameElement = document.getElementById('userName');
+            const userRoleElement = document.getElementById('userRole');
+            
+            if (currentUser.displayName) {
+                userNameElement.textContent = `${currentUser.displayName} (${currentUser.name})`;
+            } else {
+                userNameElement.textContent = currentUser.name || 'Пользователь';
+            }
+
+            // Определяем роль и показываем соответствующие элементы
+            const isOwner = currentUser.role === 'owner' || currentUser.type === 'owner';
+            
+            if (isOwner) {
+                userRoleElement.textContent = 'Владелец';
+                userRoleElement.className = 'role-badge role-owner';
+            } else {
+                userRoleElement.textContent = 'Сотрудник';
+                userRoleElement.className = 'role-badge role-admin';
+            }
+
+            // Применяем стили
+            userNameElement.style.color = '#ffd700';
+            userNameElement.style.fontWeight = 'bold';
+            userNameElement.style.textShadow = '1px 1px 2px rgba(0,0,0,0.5)';
+
+            // Создаем навигацию в зависимости от роли
+            createNavigationForRole(currentUser);
+
+            // Инициализируем данные и загружаем дашборд
+            initializeDemoData();
+            setTimeout(() => {
+                loadCrmDashboard();
+            }, 100);
+            
+            // Обработчик формы добавления пользователя
+            document.getElementById('addUserForm')?.addEventListener('submit', handleAddUser);
+        });
+
+        function createNavigationForRole(user) {
+            const crmSidebar = document.getElementById('crmSidebar');
+            const isOwner = user.role === 'owner' || user.type === 'owner';
+            
+            if (isOwner) {
+                // Полные права для владельца - все 13 функций из списка
+                crmSidebar.innerHTML = `
+                    <div class="menu-item active" onclick="showCrmTab('clients')">
+                        <i class="fas fa-users"></i>
+                        <span>Управление клиентами</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab('bookings')">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Управление записями</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab('schedule')">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Расписание занятий</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab('messages')">
+                        <i class="fas fa-comments"></i>
+                        <span>Центр сообщений</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab('analytics')">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Аналитика и отчеты</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab('finance')">
+                        <i class="fas fa-wallet"></i>
+                        <span>Финансовая отчетность</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab('childBooking')">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Запись ребенка</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab('confirmBooking')">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Подтверждение записей</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab('bookingCalendar')">
+                        <i class="fas fa-calendar"></i>
+                        <span>Календарь записи</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab('lessons')">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Уроки</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab('whatsapp')">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>Рассылка родителям</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab('payment')">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Прием оплаты</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab('dailyReport')">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Отчет за сегодня</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab('staffManagement')">
+                        <i class="fas fa-users-cog"></i>
+                        <span>Управление сотрудниками</span>
+                    </div>
+                `;
+                
+                // Показываем начальную вкладку для владельца
+                document.querySelectorAll('.crm-section').forEach(section => section.classList.remove('active'));
+                document.getElementById('clientsTab').classList.add('active');
+                
+                // Загружаем содержимое первой вкладки
+                setTimeout(() => loadClients(), 100);
+            } else {
+                // Получаем права доступа для админа
+                const permissions = getUserPermissions(user.login);
+                
+                // Ограниченные права для админа с учетом его прав доступа
+                let adminMenuItems = '';
+                let firstTab = '';
+                
+                const tabPermissions = [
+                    { id: 'childBooking', icon: 'fas fa-user-plus', label: 'Запись ребенка' },
+                    { id: 'confirmBooking', icon: 'fas fa-check-circle', label: 'Подтверждение записи' },
+                    { id: 'bookingCalendar', icon: 'fas fa-calendar', label: 'Календарь записи' },
+                    { id: 'lessons', icon: 'fas fa-graduation-cap', label: 'Уроки' },
+                    { id: 'whatsapp', icon: 'fab fa-whatsapp', label: 'Рассылка WhatsApp' },
+                    { id: 'payment', icon: 'fas fa-credit-card', label: 'Прием оплаты' },
+                    { id: 'dailyReport', icon: 'fas fa-chart-line', label: 'Отчет за день' }
+                ];
+                
+                tabPermissions.forEach((tab, index) => {
+                    if (permissions[tab.id]) {
+                        const activeClass = adminMenuItems === '' ? 'active' : '';
+                        adminMenuItems += `
+                            <div class="menu-item ${activeClass}" onclick="showCrmTab('${tab.id}')">
+                                <i class="${tab.icon}"></i>
+                                <span>${tab.label}</span>
+                            </div>
+                        `;
+                        
+                        if (firstTab === '') {
+                            firstTab = tab.id;
+                        }
+                    }
+                });
+                
+                crmSidebar.innerHTML = adminMenuItems;
+                
+                // Показываем первую доступную вкладку для админа
+                document.querySelectorAll('.crm-section').forEach(section => section.classList.remove('active'));
+                if (firstTab) {
+                    document.getElementById(firstTab + 'Tab').classList.add('active');
+                    setTimeout(() => {
+                        const loadFunction = window['load' + firstTab.charAt(0).toUpperCase() + firstTab.slice(1)];
+                        if (loadFunction) loadFunction();
+                    }, 100);
+                }
+            }
+        }
+
+        function getUserPermissions(login) {
+            // Если это владелец - все права
+            if (login === 'Raxa') {
+                return {
+                    'childBooking': true,
+                    'confirmBooking': true,
+                    'bookingCalendar': true,
+                    'lessons': true,
+                    'whatsapp': true,
+                    'payment': true,
+                    'dailyReport': true
+                };
+            }
+            
+            // Получаем права для админов из localStorage
+            const customUsers = JSON.parse(localStorage.getItem('customUsers') || '[]');
+            const user = customUsers.find(u => u.login === login);
+            
+            if (user && user.permissions) {
+                return user.permissions;
+            }
+            
+            // Права по умолчанию для новых пользователей
+            return {
+                'childBooking': true,
+                'confirmBooking': true,
+                'bookingCalendar': true,
+                'lessons': true,
+                'whatsapp': true,
+                'payment': true,
+                'dailyReport': true
+            };
+        }
+
+        function initializeDemoData() {
+            console.log('Инициализируем демо-данные...');
+            
+            // Инициализируем запросы (доходы)
+            let requests = JSON.parse(localStorage.getItem('requests') || '[]');
+            if (requests.length === 0) {
+                requests = [
+                    { amount: 25000, service: 'Подготовка к школе', parentName: 'Анна Петрова', date: new Date().toISOString() },
+                    { amount: 15000, service: 'Английский язык', parentName: 'Елена Козлова', date: new Date().toISOString() },
+                    { amount: 18000, service: 'Танцы', parentName: 'Мария Иванова', date: new Date().toISOString() }
+                ];
+                localStorage.setItem('requests', JSON.stringify(requests));
+                console.log('Демо-запросы созданы:', requests);
+            }
+
+            // Инициализируем записи
+            let appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            if (appointments.length === 0) {
+                appointments = [
+                    { parentName: 'Анна Петрова', childName: 'Мария', service: 'Подготовка к школе', date: new Date().toISOString(), time: '10:00', status: 'confirmed' },
+                    { parentName: 'Елена Козлова', childName: 'Дмитрий', service: 'Английский', date: new Date().toISOString(), time: '11:30', status: 'pending' },
+                    { parentName: 'Мария Иванова', childName: 'Анна', service: 'Танцы', date: new Date().toISOString(), time: '14:00', status: 'confirmed' }
+                ];
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                console.log('Демо-записи созданы:', appointments);
+            }
+
+            // Инициализируем клиентов
+            let registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '{}');
+            if (Object.keys(registeredUsers).length === 0) {
+                registeredUsers = {
+                    '+77771234567': {
+                        parentName: 'Анна Петрова',
+                        phone: '+7 777 123 45 67',
+                        email: 'anna@example.com',
+                        children: [{ name: 'Мария', age: 5 }]
+                    },
+                    '+77771234568': {
+                        parentName: 'Елена Козлова',
+                        phone: '+7 777 123 45 68',
+                        email: 'elena@example.com',
+                        children: [{ name: 'Дмитрий', age: 4 }]
+                    },
+                    '+77771234569': {
+                        parentName: 'Мария Иванова',
+                        phone: '+7 777 123 45 69',
+                        email: 'maria@example.com',
+                        children: [{ name: 'Анна', age: 6 }]
+                    }
+                };
+                localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+                console.log('Демо-клиенты созданы:', registeredUsers);
+            }
+        }
+
+        function showCrmTab(tabName) {
+            // Скрываем все вкладки
+            document.querySelectorAll('.crm-section').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Убираем активный класс со всех элементов меню
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Показываем выбранную вкладку
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Активируем элемент меню
+            event.target.closest('.menu-item').classList.add('active');
+
+            // Настраиваем контейнер для раздела клиентов
+            const container = document.querySelector('.main-content .container');
+            
+            if (tabName === 'clients') {
+                if (container) {
+                    container.style.maxWidth = '1200px';
+                    container.style.marginLeft = '0';
+                    container.style.paddingLeft = '2rem';
+                    container.style.borderTopWidth = '30px';
+                    container.style.paddingTop = '40px';
+                    container.classList.add('clients-active');
+                }
+            } else {
+                if (container) {
+                    container.style.maxWidth = '';
+                    container.style.marginLeft = '';
+                    container.style.paddingLeft = '';
+                    container.style.borderTopWidth = '';
+                    container.style.paddingTop = '';
+                    container.classList.remove('clients-active');
+                }
+            }
+
+            // Загружаем контент вкладки
+            switch(tabName) {
+                case 'dashboard':
+                    loadDashboard();
+                    break;
+                case 'clients':
+                    loadClients();
+                    break;
+                case 'bookings':
+                    loadBookings();
+                    break;
+                case 'schedule':
+                    loadSchedule();
+                    break;
+                case 'messages':
+                    loadMessages();
+                    break;
+                case 'analytics':
+                    loadAnalytics();
+                    break;
+                case 'finance':
+                    loadFinance();
+                    break;
+                case 'childBooking':
+                    loadChildBooking();
+                    break;
+                case 'confirmBooking':
+                    loadConfirmBooking();
+                    break;
+                case 'bookingCalendar':
+                    loadBookingCalendar();
+                    break;
+                case 'lessons':
+                    loadLessons();
+                    break;
+                case 'whatsapp':
+                    loadWhatsApp();
+                    break;
+                case 'payment':
+                    loadPayment();
+                    break;
+                case 'dailyReport':
+                    loadDailyReport();
+                    break;
+                case 'staffManagement':
+                    loadStaffManagement();
+                    break;
+            }
+        }
+
+        function loadCrmDashboard() {
+            console.log('Загружаем CRM дашборд...');
+            try {
+                loadDashboard();
+                console.log('CRM дашборд загружен успешно');
+            } catch (error) {
+                console.error('Ошибка при загрузке CRM дашборда:', error);
+            }
+        }
+
+        function loadDashboard() {
+            const activities = [
+                { action: 'Новая запись', time: '10:30', client: 'Анна Петрова' },
+                { action: 'Оплата поступила', time: '09:15', amount: '15000' },
+                { action: 'Отмена занятия', time: '08:45', client: 'Елена Козлова' },
+                { action: 'Новый клиент', time: '08:00', client: 'Мария Иванова' }
+            ];
+
+            const activitiesHtml = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>${activity.action}</strong> 
+                        ${activity.client ? '- ' + activity.client : ''}
+                        ${activity.amount ? '- ' + activity.amount + '₸' : ''}</p>
+                        <span class="activity-time">${activity.time}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('recentActivities').innerHTML = activitiesHtml;
+        }
+
+
+        function loadUserAccess() {
+            if (currentUser.role !== 'owner' && currentUser.type !== 'owner') return;
+
+            // Базовые пользователи
+            const baseUsers = [
+                { name: 'Raxa (Владелец)', login: 'Raxa', role: 'owner', status: 'active' },
+                { name: 'Admin1 (Сотрудник)', login: 'Admin1', role: 'admin', status: 'active' }
+            ];
+
+            // Получаем добавленных пользователей из localStorage
+            const customUsers = JSON.parse(localStorage.getItem('customUsers') || '[]');
+            
+            // Преобразуем добавленных пользователей в нужный формат
+            const customUsersFormatted = customUsers.map(user => ({
+                name: `${user.name} (${user.role === 'owner' ? 'Владелец' : 'Сотрудник'})`,
+                login: user.login,
+                role: user.role,
+                status: 'active',
+                isCustom: true
+            }));
+
+            // Объединяем всех пользователей
+            const allUsers = [...baseUsers, ...customUsersFormatted];
+
+            const userListHtml = allUsers.map(user => `
+                <div class="user-item">
+                    <div class="user-info">
+                        <h4>${user.name}</h4>
+                        <p>Логин: ${user.login} • Роль: ${user.role === 'owner' ? 'Владелец' : 'Сотрудник'}</p>
+                    </div>
+                    <div class="user-actions">
+                        <button class="btn-secondary" onclick="editUser('${user.login}')">
+                            <i class="fas fa-edit"></i> Изменить
+                        </button>
+                        <button class="btn-secondary" onclick="deleteUser('${user.login}')">
+                            <i class="fas fa-trash"></i> Удалить
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('userList').innerHTML = userListHtml;
+        }
+
+        async function loadClients() {
+            try {
+                // Загружаем родителей из БД
+                const { data: parents, error: parentsError } = await supa
+                    .from("users")
+                    .select(`
+                        id, full_name, phone,
+                        children(id, full_name, birthdate),
+                        invoices(id, amount, due_date, status),
+                        payments(id, amount, paid_at)
+                    `)
+                    .eq("role_id", "parent");
+
+                if (parentsError) {
+                    console.error('Error loading parents:', parentsError);
+                    // Fallback на localStorage если БД недоступна
+                    let clients = JSON.parse(localStorage.getItem('clientsData') || '[]');
+                    if (clients.length === 0) {
+                        clients = getDemoClients();
+                        localStorage.setItem('clientsData', JSON.stringify(clients));
+                    }
+                    renderClientsTable(clients);
+                    return;
+                }
+
+                // Преобразуем данные родителей в формат для отображения
+                const clients = await Promise.all(parents.map(async (parent) => {
+                    // Получаем последнюю операцию из записей
+                    const { data: bookings } = await supa
+                        .from("bookings")
+                        .select("created_at")
+                        .eq("child_id", parent.children?.[0]?.id || "")
+                        .order("created_at", { ascending: false })
+                        .limit(1);
+
+                    const totalAmount = parent.invoices?.reduce((sum, inv) => sum + Number(inv.amount || 0), 0) || 0;
+                    const lastOperation = bookings?.[0]?.created_at ? 
+                        new Date(bookings[0].created_at).toLocaleDateString('ru-RU') : 'Нет операций';
+
+                    return {
+                        id: parent.id,
+                        name: parent.full_name || '',
+                        phone: parent.phone || '',
+                        lastOperation: lastOperation,
+                        totalAmount: totalAmount,
+                        children: parent.children || [],
+                        invoices: parent.invoices || [],
+                        payments: parent.payments || []
+                    };
+                }));
+
+                renderClientsTable(clients);
+
+            } catch (error) {
+                console.error('Error in loadClients:', error);
+                // Fallback на демо данные
+                const clients = getDemoClients();
+                renderClientsTable(clients);
+            }
+        }
+
+        function getDemoClients() {
+            return [
+                {
+                    id: 1,
+                    name: 'Малика',
+                    phone: '+77015557752',
+                    lastOperation: '21/10/2025',
+                    totalAmount: 59990,
+                    children: [
+                        { name: 'Айша', age: 7 },
+                        { name: 'Данияр', age: 5 }
+                    ],
+                    purchases: [
+                        { date: '21/10/2025', service: 'Подготовка к школе', amount: 59990 }
+                    ],
+                    classes: ['Математика', 'Письмо']
+                }
+                // ... остальные демо клиенты можно добавить по необходимости
+            ];
+        }
+
+        function renderClientsTable(clients) {
+            const clientsTableBody = document.getElementById('clientsTableBody');
+            if (clientsTableBody) {
+                const clientsHtml = clients.map(client => `
+                    <tr>
+                        <td class="client-name">${client.name || ''}</td>
+                        <td class="phone-number">${client.phone}</td>
+                        <td>${client.lastOperation}</td>
+                        <td class="amount">${client.totalAmount.toLocaleString()}₸</td>
+                        <td class="action-buttons">
+                            <button class="btn-action view" onclick="showClientDetails('${client.id}')" title="Подробная информация">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+
+                clientsTableBody.innerHTML = clientsHtml || '<tr><td colspan="5" style="text-align: center; padding: 2rem;">Клиенты не найдены</td></tr>';
+            }
+        }
+
+        function showClientDetails(clientId) {
+            const clients = JSON.parse(localStorage.getItem('clientsData') || '[]');
+            const client = clients.find(c => c.id === clientId);
+            
+            if (!client) {
+                alert('Клиент не найден');
+                return;
+            }
+
+            // Создаем модальное окно с детальной информацией
+            const modalHtml = `
+                <div id="clientDetailsModal" class="modal" style="display: block;">
+                    <div class="modal-content" style="max-width: 800px;">
+                        <span class="close" onclick="closeModal('clientDetailsModal')">&times;</span>
+                        <h2>Детальная информация о клиенте</h2>
+                        
+                        <div class="client-details">
+                            <div class="detail-section">
+                                <h3>Основная информация</h3>
+                                <p><strong>Имя:</strong> ${client.name || 'Не указано'}</p>
+                                <p><strong>Телефон:</strong> ${client.phone}</p>
+                                <p><strong>Пол:</strong> ${client.gender || 'Не указан'}</p>
+                                <p><strong>Возраст:</strong> ${client.age || 'Не указан'}</p>
+                            </div>
+                            
+                            <div class="detail-section">
+                                <h3>Дети (${client.children.length})</h3>
+                                ${client.children.map(child => `
+                                    <div class="child-info">
+                                        <p><strong>Имя:</strong> ${child.name}</p>
+                                        <p><strong>Возраст:</strong> ${child.age} лет</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="detail-section">
+                                <h3>Занятия</h3>
+                                ${client.classes.length > 0 ? 
+                                    `<ul>${client.classes.map(cls => `<li>${cls}</li>`).join('')}</ul>` : 
+                                    '<p>Занятия не назначены</p>'
+                                }
+                            </div>
+                            
+                            <div class="detail-section">
+                                <h3>История покупок (${client.purchases.length})</h3>
+                                <div class="purchases-table">
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr style="background: #f8f9fa;">
+                                                <th style="padding: 0.5rem; border: 1px solid #ddd;">Дата</th>
+                                                <th style="padding: 0.5rem; border: 1px solid #ddd;">Услуга</th>
+                                                <th style="padding: 0.5rem; border: 1px solid #ddd;">Сумма</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${client.purchases.map(purchase => `
+                                                <tr>
+                                                    <td style="padding: 0.5rem; border: 1px solid #ddd;">${purchase.date}</td>
+                                                    <td style="padding: 0.5rem; border: 1px solid #ddd;">${purchase.service}</td>
+                                                    <td style="padding: 0.5rem; border: 1px solid #ddd; font-weight: bold; color: #28a745;">${purchase.amount.toLocaleString()}₸</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="total-amount" style="margin-top: 1rem; text-align: right;">
+                                    <strong>Общая сумма: ${client.totalAmount.toLocaleString()}₸</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Добавляем модальное окно в DOM
+            const existingModal = document.getElementById('clientDetailsModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+        function messageClient(clientId) {
+            const clients = JSON.parse(localStorage.getItem('clientsData') || '[]');
+            const client = clients.find(c => c.id === clientId);
+            
+            if (!client) {
+                alert('Клиент не найден');
+                return;
+            }
+
+            const message = prompt(`Отправить сообщение клиенту ${client.name || client.phone}:`);
+            if (message && message.trim()) {
+                alert(`Сообщение отправлено клиенту ${client.phone}: "${message}"`);
+                // Здесь можно добавить логику отправки сообщения через API
+            }
+        }
+
+        function loadBookings() {
+            let appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            
+            // Если нет записей, используем демо-данные
+            if (appointments.length === 0) {
+                appointments = [
+                    { parentName: 'Анна Петрова', childName: 'Мария', service: 'Подготовка к школе', date: new Date().toISOString(), time: '10:00', status: 'confirmed' },
+                    { parentName: 'Елена Козлова', childName: 'Дмитрий', service: 'Английский', date: new Date().toISOString(), time: '11:30', status: 'pending' }
+                ];
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+            }
+
+            const bookingsHtml = appointments.map(appointment => `
+                <tr>
+                    <td>${appointment.parentName || 'Не указано'}</td>
+                    <td>${appointment.childName || 'Не указано'}</td>
+                    <td>${appointment.service || 'Не указано'}</td>
+                    <td>${new Date(appointment.date).toLocaleDateString('ru-RU')}</td>
+                    <td>${appointment.time || 'Не указано'}</td>
+                    <td><span class="status-${appointment.status || 'pending'}">${appointment.status || 'Ожидает'}</span></td>
+                </tr>
+            `).join('');
+
+            const recordsTable = document.getElementById('recordsTable');
+            if (recordsTable) {
+                recordsTable.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Родитель</th>
+                                <th>Ребенок</th>
+                                <th>Услуга</th>
+                                <th>Дата</th>
+                                <th>Время</th>
+                                <th>Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${bookingsHtml}
+                        </tbody>
+                    </table>
+                `;
+            }
+        }
+
+        function loadSchedule() {
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            
+            // Группируем записи по дням
+            const scheduleByDay = {};
+            appointments.forEach(apt => {
+                const date = new Date(apt.date).toLocaleDateString('ru-RU');
+                if (!scheduleByDay[date]) {
+                    scheduleByDay[date] = [];
+                }
+                scheduleByDay[date].push(apt);
+            });
+
+            let scheduleHtml = '<div class="schedule-list">';
+            
+            if (Object.keys(scheduleByDay).length === 0) {
+                scheduleHtml += '<p>Расписание пустое</p>';
+            } else {
+                Object.entries(scheduleByDay).forEach(([date, dayAppointments]) => {
+                    scheduleHtml += `
+                        <div class="schedule-day">
+                            <h4>${date}</h4>
+                            <div class="appointments-list">
+                    `;
+                    
+                    dayAppointments.forEach(apt => {
+                        scheduleHtml += `
+                            <div class="appointment-item ${apt.status}">
+                                <div class="appointment-time">${apt.time || 'Время не указано'}</div>
+                                <div class="appointment-details">
+                                    <strong>${apt.childName || 'Ребенок'}</strong> - ${apt.service || 'Услуга'}
+                                    <br><small>Родитель: ${apt.parentName || 'Не указан'}</small>
+                                    <span class="status-badge ${apt.status}">${apt.status === 'confirmed' ? 'Подтверждено' : 'Ожидает'}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    scheduleHtml += '</div></div>';
+                });
+            }
+            
+            scheduleHtml += '</div>';
+
+            const scheduleContent = document.getElementById('scheduleContent');
+            if (scheduleContent) {
+                scheduleContent.innerHTML = scheduleHtml;
+            }
+        }
+
+        function loadMessages() {
+            const messageCenterHtml = `
+                <div class="messages-center">
+                    <div class="message-stats">
+                        <h4>Статистика сообщений</h4>
+                        <p>Отправлено сообщений: <strong>0</strong></p>
+                        <p>Получено сообщений: <strong>0</strong></p>
+                    </div>
+                    
+                    <div class="quick-message">
+                        <h4>Быстрое сообщение</h4>
+                        <form class="quick-message-form">
+                            <div class="form-group">
+                                <label>Номер телефона получателя</label>
+                                <input type="tel" placeholder="+7 777 123 45 67" id="messagePhone">
+                            </div>
+                            <div class="form-group">
+                                <label>Текст сообщения</label>
+                                <textarea placeholder="Введите текст сообщения" id="messageText" rows="3"></textarea>
+                            </div>
+                            <button type="button" class="btn-primary" onclick="sendQuickMessage()">Отправить</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+
+            const messagesContent = document.getElementById('messagesContent');
+            if (messagesContent) {
+                messagesContent.innerHTML = messageCenterHtml;
+            }
+        }
+        
+        function sendQuickMessage() {
+            const phone = document.getElementById('messagePhone')?.value;
+            const text = document.getElementById('messageText')?.value;
+            
+            if (!phone || !text) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
+            
+            // Здесь будет интеграция с WhatsApp или SMS API
+            alert(`Сообщение для ${phone}:\n\n"${text}"\n\n(В реальной системе здесь будет отправка)`);
+            
+            // Очищаем форму
+            document.getElementById('messagePhone').value = '';
+            document.getElementById('messageText').value = '';
+        }
+
+        function loadAnalytics() {
+            const requests = JSON.parse(localStorage.getItem('requests') || '[]');
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '{}');
+
+            const totalRevenue = requests.reduce((sum, req) => sum + (parseInt(req.amount) || 0), 0);
+            const avgRevenue = requests.length > 0 ? Math.round(totalRevenue / requests.length) : 0;
+            const confirmedAppointments = appointments.filter(apt => apt.status === 'confirmed').length;
+            const pendingAppointments = appointments.filter(apt => apt.status === 'pending').length;
+
+            const analyticsHtml = `
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h4>Общая статистика</h4>
+                        <p><strong>Всего клиентов:</strong> ${Object.keys(registeredUsers).length + 1}</p>
+                        <p><strong>Общий доход:</strong> ${totalRevenue.toLocaleString()}₸</p>
+                        <p><strong>Средняя сумма:</strong> ${avgRevenue.toLocaleString()}₸</p>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Записи</h4>
+                        <p><strong>Подтверждено:</strong> ${confirmedAppointments}</p>
+                        <p><strong>Ожидает:</strong> ${pendingAppointments}</p>
+                        <p><strong>Всего записей:</strong> ${appointments.length}</p>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Популярные услуги</h4>
+                        ${getPopularServices(requests)}
+                    </div>
+                </div>
+            `;
+
+            const analyticsContent = document.getElementById('analyticsContent');
+            if (analyticsContent) {
+                analyticsContent.innerHTML = analyticsHtml;
+            }
+        }
+
+        function loadFinance() {
+            const requests = JSON.parse(localStorage.getItem('requests') || '[]');
+            
+            const monthlyRevenue = requests.reduce((sum, req) => sum + (parseInt(req.amount) || 0), 0);
+            const totalPayments = requests.length;
+            
+            // Группируем по услугам
+            const servicesRevenue = {};
+            requests.forEach(req => {
+                const service = req.service || 'Не указана';
+                servicesRevenue[service] = (servicesRevenue[service] || 0) + (parseInt(req.amount) || 0);
+            });
+
+            let servicesHtml = '';
+            Object.entries(servicesRevenue).forEach(([service, amount]) => {
+                servicesHtml += `<div class="service-row">
+                    <span class="service-name">${service}</span>
+                    <span class="service-amount">${amount.toLocaleString()}₸</span>
+                </div>`;
+            });
+
+            const financeHtml = `
+                <div class="finance-summary">
+                    <div class="finance-card main">
+                        <h3>Общий доход</h3>
+                        <div class="revenue-amount">${monthlyRevenue.toLocaleString()}₸</div>
+                        <p>Всего платежей: ${totalPayments}</p>
+                    </div>
+                </div>
+                
+                <div class="finance-details">
+                    <h4>Доходы по услугам</h4>
+                    <div class="services-list">
+                        ${servicesHtml || '<p>Нет данных о доходах</p>'}
+                    </div>
+                </div>
+            `;
+
+            const financeContent = document.getElementById('financeContent');
+            if (financeContent) {
+                financeContent.innerHTML = financeHtml;
+            }
+        }
+
+        function getPopularServices(requests) {
+            const services = {};
+            requests.forEach(req => {
+                const service = req.service || 'Не указана';
+                services[service] = (services[service] || 0) + 1;
+            });
+
+            const sortedServices = Object.entries(services)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 3);
+
+            if (sortedServices.length === 0) {
+                return '<p>Нет данных о услугах</p>';
+            }
+
+            return sortedServices.map(([service, count]) => 
+                `<p><strong>${service}:</strong> ${count} раз</p>`
+            ).join('');
+        }
+
+        // Админские функции
+        function loadChildBooking() {
+            const bookingHtml = `
+                <div class="booking-form">
+                    <form id="childBookingForm" class="admin-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="childParentName">Имя родителя</label>
+                                <input type="text" id="childParentName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="childParentPhone">Телефон</label>
+                                <input type="tel" id="childParentPhone" placeholder="+7 777 123 45 67" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="childName">Имя ребенка</label>
+                                <input type="text" id="childName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="childAge">Возраст</label>
+                                <input type="number" id="childAge" min="1" max="12" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="selectedService">Услуга</label>
+                            <select id="selectedService" required>
+                                <option value="">Выберите услугу</option>
+                                <option value="early-development">Раннее развитие (1-3 года)</option>
+                                <option value="preschool">Подготовка к школе (4-6 лет)</option>
+                                <option value="art">Творчество и ИЗО</option>
+                                <option value="dance">Танцы и музыка</option>
+                                <option value="english">Английский язык</option>
+                                <option value="individual">Индивидуальные занятия</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bookingDate">Дата</label>
+                                <input type="date" id="bookingDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingTime">Время</label>
+                                <input type="time" id="bookingTime" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary">Записать ребенка</button>
+                    </form>
+                </div>
+            `;
+
+            const content = document.getElementById('childBookingContent');
+            if (content) {
+                content.innerHTML = bookingHtml;
+                
+                // Обработчик формы
+                document.getElementById('childBookingForm')?.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('Ребенок успешно записан!');
+                });
+            }
+        }
+
+        function loadConfirmBooking() {
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            const pendingBookings = appointments.filter(apt => apt.status === 'pending');
+
+            const bookingHtml = `
+                <div class="confirm-list">
+                    ${pendingBookings.length === 0 ? 
+                        '<p>Нет записей, ожидающих подтверждения</p>' :
+                        pendingBookings.map(apt => `
+                            <div class="booking-item">
+                                <div class="booking-info">
+                                    <h4>${apt.childName} - ${apt.service}</h4>
+                                    <p><strong>Родитель:</strong> ${apt.parentName}</p>
+                                    <p><strong>Дата:</strong> ${new Date(apt.date).toLocaleDateString('ru-RU')}</p>
+                                    <p><strong>Время:</strong> ${apt.time}</p>
+                                </div>
+                                <div class="booking-actions">
+                                    <button class="btn-success" onclick="confirmBooking('${apt.childName}')">
+                                        <i class="fas fa-check"></i> Подтвердить
+                                    </button>
+                                    <button class="btn-danger" onclick="cancelBooking('${apt.childName}')">
+                                        <i class="fas fa-times"></i> Отменить
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')
+                    }
+                </div>
+            `;
+
+            const content = document.getElementById('confirmBookingContent');
+            if (content) {
+                content.innerHTML = bookingHtml;
+            }
+        }
+
+        function loadBookingCalendar() {
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            
+            const calendarHtml = `
+                <div class="calendar-view">
+                    <div class="calendar-header">
+                        <h3>Календарь записей</h3>
+                        <p>Всего записей: <strong style="color: #000;">${appointments.length}</strong></p>
+                    </div>
+                    <div class="calendar-grid">
+                        ${Object.entries(groupAppointmentsByDate(appointments)).map(([date, dayAppointments]) => `
+                            <div class="calendar-day">
+                                <h4>${new Date(date).toLocaleDateString('ru-RU')}</h4>
+                                <div class="day-appointments">
+                                    ${dayAppointments.map(apt => `
+                                        <div class="appointment-badge ${apt.status}">
+                                            ${apt.time} - ${apt.childName}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            const content = document.getElementById('bookingCalendarContent');
+            if (content) {
+                content.innerHTML = calendarHtml;
+            }
+        }
+
+        function loadLessons() {
+            const lessonsHtml = `
+                <div class="lessons-management">
+                    <div class="lessons-stats">
+                        <div class="stat-item">
+                            <h3 style="color: #000;">0</h3>
+                            <p>Запланировано уроков</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3 style="color: #000;">0</h3>
+                            <p>Проведено уроков</p>
+                        </div>
+                    </div>
+                    <div class="lessons-schedule">
+                        <h4>Расписание уроков</h4>
+                        <p>Функционал уроков будет добавлен</p>
+                    </div>
+                </div>
+            `;
+
+            const content = document.getElementById('lessonsContent');
+            if (content) {
+                content.innerHTML = lessonsHtml;
+            }
+        }
+
+        function loadWhatsApp() {
+            const whatsappHtml = `
+                <div class="whatsapp-center">
+                    <div class="broadcast-form">
+                        <h4>Массовая рассылка</h4>
+                        <form id="broadcastForm">
+                            <div class="form-group">
+                                <label for="broadcastMessage">Сообщение для родителей</label>
+                                <textarea id="broadcastMessage" rows="4" placeholder="Введите текст сообщения для рассылки" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="selectAllParents">
+                                    Отправить всем родителям
+                                </label>
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fab fa-whatsapp"></i> Отправить в WhatsApp
+                            </button>
+                        </form>
+                    </div>
+                    <div class="broadcast-stats">
+                        <h4>Статистика рассылок</h4>
+                        <p>Отправлено сообщений: <strong style="color: #000;">0</strong></p>
+                        <p>Доставлено: <strong style="color: #000;">0</strong></p>
+                    </div>
+                </div>
+            `;
+
+            const content = document.getElementById('whatsappContent');
+            if (content) {
+                content.innerHTML = whatsappHtml;
+                
+                document.getElementById('broadcastForm')?.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const message = document.getElementById('broadcastMessage').value;
+                    alert(`Сообщение будет отправлено в WhatsApp:\n\n"${message}"`);
+                });
+            }
+        }
+
+        function loadPayment() {
+            const todayPayments = JSON.parse(localStorage.getItem('requests') || '[]');
+            const todayTotal = todayPayments.reduce((sum, req) => sum + (parseInt(req.amount) || 0), 0);
+
+            const paymentHtml = `
+                <div class="payment-center">
+                    <div class="receive-payment">
+                        <h4>Прием оплаты</h4>
+                        <form id="receivePaymentForm">
+                            <div class="form-group">
+                                <label for="paymentParent">Родитель</label>
+                                <input type="text" id="paymentParent" placeholder="Имя родителя" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="paymentChild">Ребенок</label>
+                                <input type="text" id="paymentChild" placeholder="Имя ребенка" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="paymentAmount">Сумма (₸)</label>
+                                <input type="number" id="paymentAmount" placeholder="15000" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="paymentService">Услуга</label>
+                                <select id="paymentService" required>
+                                    <option value="">Выберите услугу</option>
+                                    <option value="early-development">Раннее развитие</option>
+                                    <option value="preschool">Подготовка к школе</option>
+                                    <option value="art">Творчество</option>
+                                    <option value="dance">Танцы</option>
+                                    <option value="english">Английский</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-credit-card"></i> Принять оплату
+                            </button>
+                        </form>
+                    </div>
+                    <div class="payment-today">
+                        <h4>Оплаты за сегодня</h4>
+                        <div class="today-stats">
+                            <h3 style="color: #000;">${todayTotal.toLocaleString()}₸</h3>
+                            <p>Общая сумма</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const content = document.getElementById('paymentContent');
+            if (content) {
+                content.innerHTML = paymentHtml;
+                
+                document.getElementById('receivePaymentForm')?.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const amount = document.getElementById('paymentAmount').value;
+                    alert(`Оплата ${amount}₸ принята!`);
+                });
+            }
+        }
+
+        function loadDailyReport() {
+            const today = new Date().toISOString().split('T')[0];
+            const requests = JSON.parse(localStorage.getItem('requests') || '[]');
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            
+            const todayRequests = requests.filter(req => req.date?.startsWith(today));
+            const todayAppointments = appointments.filter(apt => apt.date?.startsWith(today));
+            
+            const todayRevenue = todayRequests.reduce((sum, req) => sum + (parseInt(req.amount) || 0), 0);
+            const confirmedToday = todayAppointments.filter(apt => apt.status === 'confirmed').length;
+
+            const reportHtml = `
+                <div class="daily-report">
+                    <div class="report-header">
+                        <h3>Отчет за ${new Date().toLocaleDateString('ru-RU')}</h3>
+                    </div>
+                    <div class="report-grid">
+                        <div class="report-item revenue">
+                            <h3 style="color: #000;">${todayRevenue.toLocaleString()}₸</h3>
+                            <p>Доход за день</p>
+                        </div>
+                        <div class="report-item payments">
+                            <h3 style="color: #000;">${todayRequests.length}</h3>
+                            <p>Количество оплат</p>
+                        </div>
+                        <div class="report-item appointments">
+                            <h3 style="color: #000;">${todayAppointments.length}</h3>
+                            <p>Записей на сегодня</p>
+                        </div>
+                        <div class="report-item confirmed">
+                            <h3 style="color: #000;">${confirmedToday}</h3>
+                            <p>Подтверждено</p>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="btn-primary" onclick="printDailyReport()">
+                            <i class="fas fa-print"></i> Распечатать отчет
+                        </button>
+                        <button class="btn-secondary" onclick="exportDailyReport()">
+                            <i class="fas fa-download"></i> Экспорт в Excel
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            const content = document.getElementById('dailyReportContent');
+            if (content) {
+                content.innerHTML = reportHtml;
+            }
+        }
+
+        function groupAppointmentsByDate(appointments) {
+            const grouped = {};
+            appointments.forEach(apt => {
+                const date = apt.date.split('T')[0];
+                if (!grouped[date]) {
+                    grouped[date] = [];
+                }
+                grouped[date].push(apt);
+            });
+            return grouped;
+        }
+
+        function confirmBooking(childName) {
+            alert(`Запись для ${childName} подтверждена!`);
+        }
+
+        function cancelBooking(childName) {
+            if (confirm(`Отменить запись для ${childName}?`)) {
+                alert(`Запись для ${childName} отменена`);
+            }
+        }
+
+        function loadStaffManagement() {
+            // Получаем список пользователей
+            const baseUsers = [
+                { name: 'Raxa (Владелец)', login: 'Raxa', role: 'owner', status: 'active' },
+                { name: 'Admin1 (Сотрудник)', login: 'Admin1', role: 'admin', status: 'active' }
+            ];
+
+            // Получаем добавленных пользователей из localStorage
+            const customUsers = JSON.parse(localStorage.getItem('customUsers') || '[]');
+            
+            // Преобразуем добавленных пользователей в нужный формат
+            const customUsersFormatted = customUsers.map(user => ({
+                name: `${user.name} (${user.role === 'owner' ? 'Владелец' : 'Сотрудник'})`,
+                login: user.login,
+                role: user.role,
+                status: 'active',
+                isCustom: true
+            }));
+
+            // Объединяем всех пользователей
+            const allUsers = [...baseUsers, ...customUsersFormatted];
+
+            const staffHtml = `
+                <div class="staff-management">
+                    <div class="management-actions">
+                        <button class="btn-primary" onclick="openAddUserModal()">
+                            <i class="fas fa-plus"></i> Добавить сотрудника
+                        </button>
+                    </div>
+                    
+                    <div class="staff-list">
+                        <h4>Список сотрудников (${allUsers.length})</h4>
+                        <div class="users-grid">
+                            ${allUsers.map(user => `
+                                <div class="staff-card">
+                                    <div class="staff-info">
+                                        <h4>${user.name}</h4>
+                                        <p><strong>Логин:</strong> ${user.login}</p>
+                                        <p><strong>Роль:</strong> ${user.role === 'owner' ? 'Владелец' : 'Сотрудник'}</p>
+                                        <p><strong>Статус:</strong> <span class="status-${user.status}">${user.status === 'active' ? 'Активен' : 'Неактивен'}</span></p>
+                                    </div>
+                                    <div class="staff-actions">
+                                        <button class="btn-secondary" onclick="editUser('${user.login}')">
+                                            <i class="fas fa-edit"></i> Редактировать
+                                        </button>
+                                        ${user.login !== 'Raxa' && user.login !== 'Admin1' ? `
+                                            <button class="btn-danger" onclick="deleteUser('${user.login}')">
+                                                <i class="fas fa-trash"></i> Удалить
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const content = document.getElementById('staffManagementContent');
+            if (content) {
+                content.innerHTML = staffHtml;
+            }
+        }
+
+        function openAddUserModal() {
+            if (currentUser.role !== 'owner' && currentUser.type !== 'owner') return;
+            openModal('addUserModal');
+        }
+
+        function handleAddUser(e) {
+            e.preventDefault();
+            
+            const userType = document.getElementById('newUserType').value;
+            const userName = document.getElementById('newUserName').value;
+            const userLogin = document.getElementById('newUserLogin').value;
+            const userPassword = document.getElementById('newUserPassword').value;
+
+            if (!userType || !userName || !userLogin || !userPassword) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
+
+            // Сохраняем нового пользователя в localStorage
+            const newUser = {
+                login: userLogin,
+                password: userPassword,
+                name: userName,
+                role: userType,
+                addedDate: new Date().toISOString()
+            };
+
+            // Получаем текущих пользователей из localStorage
+            let customUsers = JSON.parse(localStorage.getItem('customUsers') || '[]');
+            
+            // Проверяем на дубликат логина
+            const exists = customUsers.some(user => user.login === userLogin);
+            if (exists) {
+                alert('Пользователь с таким логином уже существует!');
+                return;
+            }
+
+            // Добавляем нового пользователя
+            customUsers.push(newUser);
+            localStorage.setItem('customUsers', JSON.stringify(customUsers));
+
+            alert(`Пользователь ${userName} успешно добавлен как ${userType === 'owner' ? 'Владелец' : 'Сотрудник'}!`);
+            
+            // Закрываем модальное окно и очищаем форму
+            closeModal('addUserModal');
+            document.getElementById('addUserForm').reset();
+            
+            // Обновляем секцию управления сотрудниками, если она активна
+            const staffManagementTab = document.getElementById('staffManagementTab');
+            if (staffManagementTab && staffManagementTab.classList.contains('active')) {
+                loadStaffManagement();
+            }
+        }
+
+        function editUser(login) {
+            if (currentUser.role !== 'owner' && currentUser.type !== 'owner') return;
+            
+            // Открываем модальное окно для редактирования прав
+            const modal = document.getElementById('editUserModal') || createEditUserModal();
+            modal.style.display = 'block';
+            
+            // Заполняем форму данными пользователя
+            document.getElementById('editUserLogin').value = login;
+            
+            // Загружаем права доступа пользователя
+            loadUserPermissions(login);
+        }
+        
+        function loadUserPermissions(login) {
+            // Получаем права доступа для пользователя
+            const customUsers = JSON.parse(localStorage.getItem('customUsers') || '[]');
+            const user = customUsers.find(u => u.login === login);
+            
+            if (user && user.permissions) {
+                // Восстанавливаем сохранённые права
+                Object.keys(user.permissions).forEach(permission => {
+                    const checkbox = document.getElementById(`perm_${permission}`);
+                    if (checkbox) {
+                        checkbox.checked = user.permissions[permission];
+                    }
+                });
+            } else {
+                // Устанавливаем права по умолчанию для админов
+                if (login !== 'Raxa') {
+                    const defaultPermissions = {
+                        'childBooking': true,
+                        'confirmBooking': true,
+                        'bookingCalendar': true,
+                        'lessons': true,
+                        'whatsapp': true,
+                        'payment': true,
+                        'dailyReport': true
+                    };
+                    
+                    Object.keys(defaultPermissions).forEach(permission => {
+                        const checkbox = document.getElementById(`perm_${permission}`);
+                        if (checkbox) {
+                            checkbox.checked = defaultPermissions[permission];
+                        }
+                    });
+                }
+            }
+        }
+        
+        function saveUserPermissions() {
+            const login = document.getElementById('editUserLogin').value;
+            const permissions = {
+                'childBooking': document.getElementById('perm_childBooking')?.checked || false,
+                'confirmBooking': document.getElementById('perm_confirmBooking')?.checked || false,
+                'bookingCalendar': document.getElementById('perm_bookingCalendar')?.checked || false,
+                'lessons': document.getElementById('perm_lessons')?.checked || false,
+                'whatsapp': document.getElementById('perm_whatsapp')?.checked || false,
+                'payment': document.getElementById('perm_payment')?.checked || false,
+                'dailyReport': document.getElementById('perm_dailyReport')?.checked || false
+            };
+            
+            // Сохраняем права в localStorage
+            let customUsers = JSON.parse(localStorage.getItem('customUsers') || '[]');
+            const userIndex = customUsers.findIndex(u => u.login === login);
+            
+            if (userIndex !== -1) {
+                customUsers[userIndex].permissions = permissions;
+                localStorage.setItem('customUsers', JSON.stringify(customUsers));
+            }
+            
+            alert(`Права доступа для ${login} сохранены!`);
+            closeModal('editUserModal');
+            
+            // Обновляем секцию управления сотрудниками, если она активна
+            const staffManagementTab = document.getElementById('staffManagementTab');
+            if (staffManagementTab && staffManagementTab.classList.contains('active')) {
+                loadStaffManagement();
+            }
+        }
+
+        function deleteUser(login) {
+            if (currentUser.role !== 'owner' && currentUser.type !== 'owner') return;
+            
+            // Проверяем, нельзя ли удалить базовых пользователей
+            if (login === 'Raxa' || login === 'Admin1') {
+                alert('Нельзя удалить базовых пользователей системы');
+                return;
+            }
+            
+            if (confirm(`Вы уверены, что хотите удалить пользователя ${login}?`)) {
+                // Удаляем из localStorage
+                let customUsers = JSON.parse(localStorage.getItem('customUsers') || '[]');
+                customUsers = customUsers.filter(user => user.login !== login);
+                localStorage.setItem('customUsers', JSON.stringify(customUsers));
+                
+                alert(`Пользователь ${login} удален из системы`);
+                
+                // Обновляем секцию управления сотрудниками, если она активна
+                const staffManagementTab = document.getElementById('staffManagementTab');
+                if (staffManagementTab && staffManagementTab.classList.contains('active')) {
+                    loadStaffManagement();
+                }
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        // Подключаем функции модальных окон из основного скрипта
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        // Функция для управления боковым меню на мобильных устройствах
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Закрываем боковое меню при клике вне его на мобильных устройствах
+        document.addEventListener('click', function(event) {
+            const sidebar = document.querySelector('.sidebar');
+            const toggleButton = document.querySelector('.sidebar-toggle');
+            
+            if (window.innerWidth <= 768 && 
+                sidebar.classList.contains('active') && 
+                !sidebar.contains(event.target) && 
+                !toggleButton.contains(event.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Закрываем боковое меню при изменении размера экрана
+        window.addEventListener('resize', function() {
+            const sidebar = document.querySelector('.sidebar');
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('active');
+            }
+        });
+    </script>
+    <!-- временно можно проставить ключи прямо на странице; в Vercel их уберём в ENV -->
+    <script>
+      window.PUBLIC_SUPABASE_URL = "https://estplmvqprqbobrjicmd.supabase.co";
+      window.PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzdHBsbXZxcHJxYm9icmppY21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwMzQxNTUsImV4cCI6MjA3NjYxMDE1NX0.dZrGpi9mJ_oZqVn0LlzVqzOQMLSH097DT2jlOGuArpc";
+    </script>
+    <script type="module">
+        import { supa } from '/supabaseClient.js';
+        window.supa = supa;
+    </script>
+    <script type="module" src="/script.js"></script>
+</body>
+</html>

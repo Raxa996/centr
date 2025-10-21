@@ -1,0 +1,34 @@
+{
+  "parents": {
+    "test": {
+      "phone": "+7 777 123 45 67",
+      "password": "Тест",
+      "name": "Тест (Родитель)",
+      "active": true
+    }
+  },
+  "owners": {
+    "admin": {
+      "login": "Admin",
+      "password": "Admim",
+      "name": "Admin (Владелец)",
+      "active": true
+    }
+  },
+  "employees": {
+    "admin1": {
+      "login": "Admin1",
+      "password": "Admin1",
+      "name": "Admin1 (Сотрудник)",
+      "position": "Администратор",
+      "active": true
+    }
+  },
+  "instructions": {
+    "note": "Для добавления новых пользователей:",
+    "parents": "Регистрируются через форму регистрации на сайте",
+    "owners": "Добавьте в объект 'owners' с уникальным ключом",
+    "employees": "Добавьте в объект 'employees' с уникальным ключом"
+  }
+}
+

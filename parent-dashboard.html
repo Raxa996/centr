@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет родителя - Центр "Радуга"</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>🌈 Центр "Радуга"</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-link" id="userName">Родитель</span>
+                </li>
+                <li class="nav-item">
+                    <button class="btn-secondary" onclick="logout()">Выйти</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <div class="dashboard-layout">
+            <!-- Боковое меню -->
+            <div class="sidebar">
+                <div class="sidebar-menu">
+                    <div class="menu-item active" onclick="showTab('overview')">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Обзор</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('progress')">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Успеваемость</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('notes')">
+                        <i class="fas fa-sticky-note"></i>
+                        <span>Заметки и ДЗ</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('schedule')">
+                        <i class="fas fa-calendar"></i>
+                        <span>Расписание</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('booking')">
+                        <i class="fas fa-calendar-plus"></i>
+                        <span>Записаться</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('payment')">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Оплата</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('profile')">
+                        <i class="fas fa-user"></i>
+                        <span>Профиль</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Основной контент -->
+            <div class="main-content">
+                <div class="container">
+
+            <!-- Контент вкладок -->
+            <div id="overview" class="tab-content active">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Обзор</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalChildren">1</div>
+                            <div class="stat-label">Детей записано</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="activeServices">2</div>
+                            <div class="stat-label">Активных услуг</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="nextLesson">Завтра</div>
+                            <div class="stat-label">Ближайшее занятие</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="balance">0 ₸</div>
+                            <div class="stat-label">Баланс</div>
+                        </div>
+                    </div>
+
+                    <h3>Ближайшие занятия</h3>
+                    <div class="upcoming-lessons" id="upcomingLessons">
+                        <!-- Заполняется JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="progress" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Успеваемость ребенка</h2>
+                    <div class="progress-filters">
+                        <select id="childSelect">
+                            <option value="">Выберите ребенка</option>
+                        </select>
+                        <select id="serviceSelect">
+                            <option value="">Выберите услугу</option>
+                        </select>
+                    </div>
+                    <div class="progress-table" id="progressData">
+                        <!-- Заполняется JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="notes" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Заметки и домашние задания</h2>
+                    <div class="notes-filters">
+                        <select id="childSelectNotes">
+                            <option value="">Выберите ребенка</option>
+                        </select>
+                    </div>
+                    <div class="notes-list" id="notesData">
+                        <!-- Заполняется JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="schedule" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Расписание занятий</h2>
+                    <div class="calendar-container">
+                        <div class="calendar-controls">
+                            <button onclick="changeMonth(-1)">←</button>
+                            <span id="currentMonth"></span>
+                            <button onclick="changeMonth(1)">→</button>
+                        </div>
+                        <div class="calendar" id="parentCalendar">
+                            <!-- Заполняется JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="booking" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Запись на занятия</h2>
+                    <form id="bookingForm" class="booking-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bookingChild">Ребенок</label>
+                                <select id="bookingChild" required>
+                                    <option value="">Выберите ребенка</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingService">Услуга</label>
+                                <select id="bookingService" required>
+                                    <option value="">Выберите услугу</option>
+                                    <option value="early-development">Раннее развитие</option>
+                                    <option value="preschool">Подготовка к школе</option>
+                                    <option value="art">Творчество и ИЗО</option>
+                                    <option value="dance">Танцы и музыка</option>
+                                    <option value="english">Английский язык</option>
+                                    <option value="individual">Индивидуальные занятия</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bookingDate">Дата</label>
+                                <input type="date" id="bookingDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingTime">Время</label>
+                                <select id="bookingTime" required>
+                                    <option value="">Выберите время</option>
+                                    <option value="09:00">09:00</option>
+                                    <option value="10:00">10:00</option>
+                                    <option value="11:00">11:00</option>
+                                    <option value="12:00">12:00</option>
+                                    <option value="13:00">13:00</option>
+                                    <option value="14:00">14:00</option>
+                                    <option value="15:00">15:00</option>
+                                    <option value="16:00">16:00</option>
+                                    <option value="17:00">17:00</option>
+                                    <option value="18:00">18:00</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingNotes">Примечания</label>
+                            <textarea id="bookingNotes" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Записаться</button>
+                    </form>
+
+                    <h3>Доступные слоты</h3>
+                    <div class="available-slots" id="availableSlots">
+                        <!-- Заполняется JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="payment" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Оплата услуг</h2>
+                    
+                    <div class="payment-summary">
+                        <h3>К оплате</h3>
+                        <div class="invoices-list" id="invoicesList">
+                            <!-- Заполняется JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="payment-methods">
+                        <h3>Способы оплаты</h3>
+                        <div class="payment-cards">
+                            <div class="payment-card" onclick="selectPaymentMethod('kaspi')">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Kaspi Pay</span>
+                            </div>
+                            <div class="payment-card" onclick="selectPaymentMethod('halyk')">
+                                <i class="fas fa-university"></i>
+                                <span>Halyk Bank</span>
+                            </div>
+                            <div class="payment-card" onclick="selectPaymentMethod('cash')">
+                                <i class="fas fa-money-bill"></i>
+                                <span>Наличные в центре</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-history">
+                        <h3>История платежей</h3>
+                        <table class="table" id="paymentHistory">
+                            <!-- Заполняется JavaScript -->
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="profile" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Профиль</h2>
+                    
+                    <div class="profile-sections">
+                        <div class="profile-section">
+                            <h3>Информация о родителе</h3>
+                            <form id="parentProfileForm">
+                                <div class="form-group">
+                                    <label for="parentFullName">ФИО</label>
+                                    <input type="text" id="parentFullName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="parentPhone">Телефон</label>
+                                    <input type="tel" id="parentPhone" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="parentEmail">Email</label>
+                                    <input type="email" id="parentEmail" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="parentAddress">Адрес</label>
+                                    <input type="text" id="parentAddress">
+                                </div>
+                                <button type="submit" class="btn-primary">Сохранить</button>
+                            </form>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>Информация о детях</h3>
+                            <div class="children-list" id="childrenList">
+                                <!-- Заполняется JavaScript -->
+                            </div>
+                            <button class="btn-secondary" onclick="addChildModal()">Добавить ребенка</button>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления ребенка -->
+    <div id="addChildModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addChildModal')">&times;</span>
+            <h2>Добавить ребенка</h2>
+            <form id="addChildForm">
+                <div class="form-group">
+                    <label for="childName">Имя ребенка</label>
+                    <input type="text" id="childName" required>
+                </div>
+                <div class="form-group">
+                    <label for="childBirthDate">Дата рождения</label>
+                    <input type="date" id="childBirthDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="childGender">Пол</label>
+                    <select id="childGender" required>
+                        <option value="">Выберите пол</option>
+                        <option value="male">Мальчик</option>
+                        <option value="female">Девочка</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="childNotes">Особенности (аллергии, замечания врача и т.д.)</label>
+                    <textarea id="childNotes" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Добавить</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация родительского кабинета
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем авторизацию
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if (!currentUser || currentUser.type !== 'parent') {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Отображаем имя пользователя с типом доступа
+            const userNameElement = document.getElementById('userName');
+            if (currentUser.displayName) {
+                userNameElement.textContent = `${currentUser.displayName} (${currentUser.name})`;
+            } else {
+                userNameElement.textContent = currentUser.name || 'Родитель';
+            }
+            userNameElement.style.color = '#ffd700';
+            userNameElement.style.fontWeight = 'bold';
+            userNameElement.style.textShadow = '1px 1px 2px rgba(0,0,0,0.5)';
+            loadParentDashboard();
+        });
+
+        let currentParentData = {
+            children: [
+                {
+                    id: 1,
+                    name: 'Максим Петров',
+                    birthDate: '2019-03-15',
+                    gender: 'male',
+                    services: ['preschool', 'art']
+                }
+            ],
+            profile: {
+                fullName: 'Иван Петров',
+                phone: '+7 777 123 45 67',
+                email: 'ivan.petrov@email.com',
+                address: 'ул. Абая, 10, кв. 5'
+            }
+        };
+
+        function showTab(tabName) {
+            // Убираем активный класс со всех элементов меню
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Добавляем активный класс к выбранному элементу меню
+            event.target.closest('.menu-item').classList.add('active');
+            
+            document.getElementById(tabName).classList.add('active');
+            
+            // Загружаем данные для соответствующей вкладки
+            switch(tabName) {
+                case 'overview':
+                    loadOverview();
+                    break;
+                case 'progress':
+                    loadProgress();
+                    break;
+                case 'notes':
+                    loadNotes();
+                    break;
+                case 'schedule':
+                    loadSchedule();
+                    break;
+                case 'booking':
+                    loadBooking();
+                    break;
+                case 'payment':
+                    loadPayment();
+                    break;
+                case 'profile':
+                    loadProfile();
+                    break;
+            }
+        }
+
+        function loadParentDashboard() {
+            loadOverview();
+            loadChildrenSelects();
+        }
+
+        function loadOverview() {
+            document.getElementById('totalChildren').textContent = currentParentData.children.length;
+            
+            let totalServices = 0;
+            currentParentData.children.forEach(child => {
+                totalServices += child.services.length;
+            });
+            document.getElementById('activeServices').textContent = totalServices;
+            
+            // Загружаем ближайшие занятия
+            loadUpcomingLessons();
+        }
+
+        function loadUpcomingLessons() {
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            const upcomingLessons = appointments.filter(apt => {
+                const aptDate = new Date(apt.date);
+                return aptDate >= new Date() && 
+                       currentParentData.children.some(child => child.name === apt.childName);
+            }).slice(0, 5);
+
+            const container = document.getElementById('upcomingLessons');
+            if (upcomingLessons.length === 0) {
+                container.innerHTML = '<p>Ближайших занятий нет</p>';
+            } else {
+                container.innerHTML = upcomingLessons.map(lesson => `
+                    <div class="lesson-item">
+                        <div class="lesson-date">${new Date(lesson.date).toLocaleDateString('ru-RU')}</div>
+                        <div class="lesson-time">${lesson.time}</div>
+                        <div class="lesson-service">${lesson.service}</div>
+                        <div class="lesson-child">${lesson.childName}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function loadProgress() {
+            const progress = JSON.parse(localStorage.getItem('progress') || '[]');
+            const progressData = document.getElementById('progressData');
+            
+            if (progress.length === 0) {
+                progressData.innerHTML = '<p>Данных об успеваемости пока нет</p>';
+            } else {
+                progressData.innerHTML = progress.map(item => `
+                    <div class="progress-item">
+                        <h4>${item.childName} - ${item.service}</h4>
+                        <div class="progress-details">
+                            ${item.progress.map(p => `
+                                <div class="progress-entry">
+                                    <span class="progress-date">${p.date}</span>
+                                    <span class="progress-subject">${p.subject}</span>
+                                    <span class="progress-grade grade-${p.grade}">${p.grade}</span>
+                                    <span class="progress-comment">${p.comment}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function loadNotes() {
+            const notesData = document.getElementById('notesData');
+            notesData.innerHTML = `
+                <div class="note-item">
+                    <div class="note-date">15.01.2024</div>
+                    <div class="note-child">Максим</div>
+                    <div class="note-service">Подготовка к школе</div>
+                    <div class="note-content">
+                        <strong>Домашнее задание:</strong> Повторить цифры от 1 до 10, выучить стихотворение "Зима"
+                    </div>
+                    <div class="note-teacher">Педагог: Анна Сергеевна</div>
+                </div>
+                <div class="note-item">
+                    <div class="note-date">20.01.2024</div>
+                    <div class="note-child">Максим</div>
+                    <div class="note-service">Творчество</div>
+                    <div class="note-content">
+                        <strong>Заметка:</strong> Ребенок очень хорошо работает с красками, проявляет творческий подход
+                    </div>
+                    <div class="note-teacher">Педагог: Мария Ивановна</div>
+                </div>
+            `;
+        }
+
+        function loadSchedule() {
+            const today = new Date();
+            generateCalendar(today.getFullYear(), today.getMonth());
+            updateMonthDisplay(today.getFullYear(), today.getMonth());
+        }
+
+        function loadBooking() {
+            // Инициализация формы записи
+            const bookingForm = document.getElementById('bookingForm');
+            bookingForm.addEventListener('submit', handleBookingSubmit);
+            
+            loadAvailableSlots();
+        }
+
+        function loadPayment() {
+            // Загружаем счета к оплате
+            const invoicesList = document.getElementById('invoicesList');
+            invoicesList.innerHTML = `
+                <div class="invoice-item">
+                    <div class="invoice-details">
+                        <div class="invoice-service">Подготовка к школе - Январь</div>
+                        <div class="invoice-child">Максим Петров</div>
+                        <div class="invoice-date">Срок оплаты: 25.01.2024</div>
+                    </div>
+                    <div class="invoice-amount">20,000 ₸</div>
+                    <button class="btn-primary" onclick="payInvoice(1)">Оплатить</button>
+                </div>
+            `;
+
+            // Загружаем историю платежей
+            const paymentHistory = document.getElementById('paymentHistory');
+            paymentHistory.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Услуга</th>
+                        <th>Ребенок</th>
+                        <th>Сумма</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>15.12.2023</td>
+                        <td>Творчество - Декабрь</td>
+                        <td>Максим Петров</td>
+                        <td>12,000 ₸</td>
+                        <td><span class="status-paid">Оплачено</span></td>
+                    </tr>
+                </tbody>
+            `;
+        }
+
+        function loadProfile() {
+            // Заполняем форму профиля
+            const profile = currentParentData.profile;
+            document.getElementById('parentFullName').value = profile.fullName;
+            document.getElementById('parentPhone').value = profile.phone;
+            document.getElementById('parentEmail').value = profile.email;
+            document.getElementById('parentAddress').value = profile.address;
+
+            // Загружаем список детей
+            loadChildrenList();
+        }
+
+        function loadChildrenSelects() {
+            const selects = ['childSelect', 'childSelectNotes', 'bookingChild'];
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    select.innerHTML = '<option value="">Выберите ребенка</option>' +
+                        currentParentData.children.map(child => 
+                            `<option value="${child.id}">${child.name}</option>`
+                        ).join('');
+                }
+            });
+        }
+
+        function loadChildrenList() {
+            const childrenList = document.getElementById('childrenList');
+            childrenList.innerHTML = currentParentData.children.map(child => `
+                <div class="child-card">
+                    <div class="child-info">
+                        <h4>${child.name}</h4>
+                        <p>Дата рождения: ${new Date(child.birthDate).toLocaleDateString('ru-RU')}</p>
+                        <p>Пол: ${child.gender === 'male' ? 'Мальчик' : 'Девочка'}</p>
+                        <p>Услуги: ${getServiceNames(child.services).join(', ')}</p>
+                    </div>
+                    <button class="btn-secondary" onclick="editChild(${child.id})">Редактировать</button>
+                </div>
+            `).join('');
+        }
+
+        function getServiceNames(serviceIds) {
+            const serviceNames = {
+                'early-development': 'Раннее развитие',
+                'preschool': 'Подготовка к школе',
+                'art': 'Творчество и ИЗО',
+                'dance': 'Танцы и музыка',
+                'english': 'Английский язык',
+                'individual': 'Индивидуальные занятия'
+            };
+            return serviceIds.map(id => serviceNames[id] || id);
+        }
+
+        function handleBookingSubmit(e) {
+            e.preventDefault();
+            
+            const formData = {
+                childId: document.getElementById('bookingChild').value,
+                service: document.getElementById('bookingService').value,
+                date: document.getElementById('bookingDate').value,
+                time: document.getElementById('bookingTime').value,
+                notes: document.getElementById('bookingNotes').value
+            };
+
+            const child = currentParentData.children.find(c => c.id == formData.childId);
+            if (!child) {
+                alert('Выберите ребенка');
+                return;
+            }
+
+            // Создаем запись
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            appointments.push({
+                id: Date.now(),
+                date: formData.date,
+                time: formData.time,
+                parentName: currentParentData.profile.fullName,
+                childName: child.name,
+                service: document.getElementById('bookingService').selectedOptions[0].text,
+                notes: formData.notes,
+                status: 'pending'
+            });
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+
+            alert('Заявка на запись отправлена! Мы подтвердим время занятий.');
+            e.target.reset();
+        }
+
+        function loadAvailableSlots() {
+            // Здесь можно загрузить доступные слоты времени
+            const availableSlots = document.getElementById('availableSlots');
+            availableSlots.innerHTML = `
+                <div class="slot-item">
+                    <div class="slot-date">Завтра (16.01)</div>
+                    <div class="slot-times">
+                        <button class="slot-btn" onclick="selectSlot('09:00')">09:00</button>
+                        <button class="slot-btn" onclick="selectSlot('11:00')">11:00</button>
+                        <button class="slot-btn" onclick="selectSlot('16:00')">16:00</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectPaymentMethod(method) {
+            alert(`Выбран способ оплаты: ${method}`);
+        }
+
+        function payInvoice(invoiceId) {
+            alert(`Оплата счета №${invoiceId} перенаправит вас на страницу оплаты`);
+        }
+
+        function addChildModal() {
+            openModal('addChildModal');
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        // Подключаем функции из основного script.js
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'block';
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function generateCalendar(year, month) {
+            // Используем функцию из основного script.js
+            if (typeof window.generateCalendar === 'function') {
+                window.generateCalendar(year, month);
+            }
+        }
+
+        function updateMonthDisplay(year, month) {
+            const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+                'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+            document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+        }
+
+        function changeMonth(direction) {
+            // Логика изменения месяца
+        }
+
+    </script>
+    
+    <!-- временно можно проставить ключи прямо на странице; в Vercel их уберём в ENV -->
+    <script>
+      window.PUBLIC_SUPABASE_URL = "https://estplmvqprqbobrjicmd.supabase.co";
+      window.PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzdHBsbXZxcHJxYm9icmppY21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwMzQxNTUsImV4cCI6MjA3NjYxMDE1NX0.dZrGpi9mJ_oZqVn0LlzVqzOQMLSH097DT2jlOGuArpc";
+    </script>
+    <script type="module" src="/supabaseClient.js"></script>
+</body>
+</html>

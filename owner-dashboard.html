@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кабинет владельца - Центр "Радуга"</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>🌈 Центр "Радуга"</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-link" id="ownerName">Владелец</span>
+                </li>
+                <li class="nav-item">
+                    <button class="btn-secondary" onclick="logout()">Выйти</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <div class="container">
+            <!-- Заголовок -->
+            <div class="dashboard-header">
+                <div class="container">
+                    <div class="dashboard-nav">
+                        <button class="btn-primary active" onclick="showTab('overview')">
+                            <i class="fas fa-chart-pie"></i> Обзор
+                        </button>
+                        <button class="btn-secondary" onclick="showTab('finance')">
+                            <i class="fas fa-money-bill-wave"></i> Финансы
+                        </button>
+                        <button class="btn-secondary" onclick="showTab('records')">
+                            <i class="fas fa-list"></i> Записи
+                        </button>
+                        <button class="btn-secondary" onclick="showTab('teachers')">
+                            <i class="fas fa-chalkboard-teacher"></i> Отчет по педагогам
+                        </button>
+                        <button class="btn-secondary" onclick="showTab('attendance')">
+                            <i class="fas fa-users"></i> Посещаемость
+                        </button>
+                        <button class="btn-secondary" onclick="showTab('settings')">
+                            <i class="fas fa-cogs"></i> Настройки
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Контент вкладок -->
+            <div id="overview" class="tab-content active">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Обзор центра</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalRevenue">2,450,000 ₸</div>
+                            <div class="stat-label">Общая выручка</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalStudents">87</div>
+                            <div class="stat-label">Всего учеников</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="activeTeachers">12</div>
+                            <div class="stat-label">Преподавателей</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="monthlyRevenue">450,000 ₸</div>
+                            <div class="stat-label">Выручка за месяц</div>
+                        </div>
+                    </div>
+
+                    <div class="overview-charts">
+                        <div class="chart-container">
+                            <h3>Выручка по месяцам</h3>
+                            <div class="chart-placeholder">
+                                <canvas id="revenueChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Популярные услуги</h3>
+                            <div class="services-chart" id="servicesChart">
+                                <!-- Заполняется JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="finance" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Финансы</h2>
+                    
+                    <div class="finance-filters">
+                        <select id="financePeriod">
+                            <option value="month">За месяц</option>
+                            <option value="quarter">За квартал</option>
+                            <option value="year">За год</option>
+                        </select>
+                        <input type="month" id="financeMonth">
+                    </div>
+
+                    <div class="finance-summary">
+                        <div class="finance-card income">
+                            <h3>Доходы</h3>
+                            <div class="finance-amount" id="totalIncome">450,000 ₸</div>
+                            <div class="finance-breakdown">
+                                <div class="breakdown-item">
+                                    <span>Подписка на услуги:</span>
+                                    <span>380,000 ₸</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span>Индивидуальные занятия:</span>
+                                    <span>70,000 ₸</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="finance-card expenses">
+                            <h3>Расходы</h3>
+                            <div class="finance-amount" id="totalExpenses">280,000 ₸</div>
+                            <div class="finance-breakdown">
+                                <div class="breakdown-item">
+                                    <span>Зарплата преподавателей:</span>
+                                    <span>200,000 ₸</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span>Аренда:</span>
+                                    <span>50,000 ₸</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span>Материалы:</span>
+                                    <span>30,000 ₸</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="finance-card profit">
+                            <h3>Прибыль</h3>
+                            <div class="finance-amount" id="totalProfit">170,000 ₸</div>
+                        </div>
+                    </div>
+
+                    <h3>История платежей</h3>
+                    <div class="table-container">
+                        <table class="table" id="financeHistory">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Родитель</th>
+                                    <th>Ребенок</th>
+                                    <th>Услуга</th>
+                                    <th>Сумма</th>
+                                    <th>Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody id="financeHistoryBody">
+                                <!-- Заполняется JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="records" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Все записи</h2>
+                    
+                    <div class="records-filters">
+                        <select id="recordsStatus">
+                            <option value="all">Все записи</option>
+                            <option value="pending">На рассмотрении</option>
+                            <option value="confirmed">Подтвержденные</option>
+                            <option value="cancelled">Отмененные</option>
+                        </select>
+                        <input type="date" id="recordsDateFrom" placeholder="Дата от">
+                        <input type="date" id="recordsDateTo" placeholder="Дата до">
+                        <button class="btn-secondary" onclick="filterRecords()">Фильтровать</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table" id="allRecordsTable">
+                            <thead>
+                                <tr>
+                                    <th>Дата подачи</th>
+                                    <th>Родитель</th>
+                                    <th>Телефон</th>
+                                    <th>Ребенок</th>
+                                    <th>Возраст</th>
+                                    <th>Услуга</th>
+                                    <th>Статус</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allRecordsBody">
+                                <!-- Заполняется JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="teachers" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Отчет по педагогам</h2>
+                    
+                    <div class="teachers-summary">
+                        <div class="teacher-card">
+                            <div class="teacher-info">
+                                <h4>Анна Сергеевна</h4>
+                                <p>Подготовка к школе</p>
+                            </div>
+                            <div class="teacher-stats">
+                                <div class="stat">
+                                    <span class="stat-value">25</span>
+                                    <span class="stat-label">учеников</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value">180</span>
+                                    <span class="stat-label">часов</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value">4.8</span>
+                                    <span class="stat-label">рейтинг</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="teacher-card">
+                            <div class="teacher-info">
+                                <h4>Мария Ивановна</h4>
+                                <p>Творчество и ИЗО</p>
+                            </div>
+                            <div class="teacher-stats">
+                                <div class="stat">
+                                    <span class="stat-value">18</span>
+                                    <span class="stat-label">учеников</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value">120</span>
+                                    <span class="stat-label">часов</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value">4.9</span>
+                                    <span class="stat-label">рейтинг</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="teacher-card">
+                            <div class="teacher-info">
+                                <h4>Елена Петровна</h4>
+                                <p>Английский язык</p>
+                            </div>
+                            <div class="teacher-stats">
+                                <div class="stat">
+                                    <span class="stat-value">22</span>
+                                    <span class="stat-label">учеников</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value">165</span>
+                                    <span class="stat-label">часов</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value">4.7</span>
+                                    <span class="stat-label">рейтинг</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Детальный отчет</h3>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Педагог</th>
+                                    <th>Специализация</th>
+                                    <th>Часы работы</th>
+                                    <th>Количество учеников</th>
+                                    <th>Средний рейтинг</th>
+                                    <th>Зарплата</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Анна Сергеевна</td>
+                                    <td>Подготовка к школе</td>
+                                    <td>180</td>
+                                    <td>25</td>
+                                    <td>4.8</td>
+                                    <td>120,000 ₸</td>
+                                </tr>
+                                <tr>
+                                    <td>Мария Ивановна</td>
+                                    <td>Творчество и ИЗО</td>
+                                    <td>120</td>
+                                    <td>18</td>
+                                    <td>4.9</td>
+                                    <td>80,000 ₸</td>
+                                </tr>
+                                <tr>
+                                    <td>Елена Петровна</td>
+                                    <td>Английский язык</td>
+                                    <td>165</td>
+                                    <td>22</td>
+                                    <td>4.7</td>
+                                    <td>110,000 ₸</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="attendance" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Отчет по посещаемости</h2>
+                    
+                    <div class="attendance-filters">
+                        <select id="attendancePeriod">
+                            <option value="week">За неделю</option>
+                            <option value="month">За месяц</option>
+                            <option value="quarter">За квартал</option>
+                        </select>
+                        <input type="date" id="attendanceDate">
+                    </div>
+
+                    <div class="attendance-summary">
+                        <div class="attendance-stat">
+                            <div class="stat-number">85%</div>
+                            <div class="stat-label">Средняя посещаемость</div>
+                        </div>
+                        <div class="attendance-stat">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">Регулярно посещают</div>
+                        </div>
+                        <div class="attendance-stat">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Проблемы с посещением</div>
+                        </div>
+                    </div>
+
+                    <h3>Детальная статистика</h3>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Ребенок</th>
+                                    <th>Услуга</th>
+                                    <th>Плановые занятия</th>
+                                    <th>Посещено</th>
+                                    <th>% посещаемости</th>
+                                    <th>Пропуски</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Максим Петров</td>
+                                    <td>Подготовка к школе</td>
+                                    <td>16</td>
+                                    <td>14</td>
+                                    <td>87.5%</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>София Козлова</td>
+                                    <td>Английский язык</td>
+                                    <td>12</td>
+                                    <td>12</td>
+                                    <td>100%</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>Алиса Нурланова</td>
+                                    <td>Творчество</td>
+                                    <td>8</td>
+                                    <td>5</td>
+                                    <td>62.5%</td>
+                                    <td>3</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="settings" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Настройки центра</h2>
+                    
+                    <div class="settings-sections">
+                        <div class="settings-section">
+                            <h3>Цены на услуги</h3>
+                            <form id="pricesForm">
+                                <div class="form-group">
+                                    <label for="priceEarlyDevelopment">Раннее развитие (1-3 года)</label>
+                                    <input type="number" id="priceEarlyDevelopment" value="15000" min="0">
+                                    <span>₸/месяц</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pricePreschool">Подготовка к школе (4-6 лет)</label>
+                                    <input type="number" id="pricePreschool" value="20000" min="0">
+                                    <span>₸/месяц</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="priceArt">Творчество и ИЗО</label>
+                                    <input type="number" id="priceArt" value="12000" min="0">
+                                    <span>₸/месяц</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="priceDance">Танцы и музыка</label>
+                                    <input type="number" id="priceDance" value="18000" min="0">
+                                    <span>₸/месяц</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="priceEnglish">Английский язык</label>
+                                    <input type="number" id="priceEnglish" value="25000" min="0">
+                                    <span>₸/месяц</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="priceIndividual">Индивидуальные занятия</label>
+                                    <input type="number" id="priceIndividual" value="5000" min="0">
+                                    <span>₸/занятие</span>
+                                </div>
+                                <button type="submit" class="btn-primary">Сохранить цены</button>
+                            </form>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Дизайн сайта</h3>
+                            <div class="design-settings">
+                                <div class="form-group">
+                                    <label for="primaryColor">Основной цвет</label>
+                                    <input type="color" id="primaryColor" value="#667eea">
+                                </div>
+                                <div class="form-group">
+                                    <label for="secondaryColor">Дополнительный цвет</label>
+                                    <input type="color" id="secondaryColor" value="#764ba2">
+                                </div>
+                                <button class="btn-primary" onclick="updateDesign()">Применить дизайн</button>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Контактная информация</h3>
+                            <form id="contactForm">
+                                <div class="form-group">
+                                    <label for="centerPhone">Телефон центра</label>
+                                    <input type="tel" id="centerPhone" value="+7 (727) 123-45-67">
+                                </div>
+                                <div class="form-group">
+                                    <label for="centerEmail">Email центра</label>
+                                    <input type="email" id="centerEmail" value="info@raduga-almaty.kz">
+                                </div>
+                                <div class="form-group">
+                                    <label for="centerAddress">Адрес центра</label>
+                                    <input type="text" id="centerAddress" value="ул. Абая, 150, Алматы">
+                                </div>
+                                <div class="form-group">
+                                    <label for="centerHours">Режим работы</label>
+                                    <textarea id="centerHours" rows="3">Понедельник - Пятница: 9:00 - 19:00
+Суббота: 9:00 - 15:00
+Воскресенье: выходной</textarea>
+                                </div>
+                                <button type="submit" class="btn-primary">Сохранить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация кабинета владельца
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем авторизацию
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if (!currentUser || currentUser.type !== 'owner') {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Отображаем имя пользователя с типом доступа
+            const ownerNameElement = document.getElementById('ownerName');
+            if (currentUser.displayName) {
+                ownerNameElement.textContent = `${currentUser.displayName} (${currentUser.name})`;
+            } else {
+                ownerNameElement.textContent = currentUser.name || 'Владелец';
+            }
+            ownerNameElement.style.color = '#ffd700';
+            ownerNameElement.style.fontWeight = 'bold';
+            ownerNameElement.style.textShadow = '1px 1px 2px rgba(0,0,0,0.5)';
+            loadOwnerDashboard();
+        });
+
+        function showTab(tabName) {
+            // Убираем активный класс со всех вкладок и контента
+            document.querySelectorAll('.dashboard-nav button').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+            });
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Добавляем активный класс к выбранной вкладке
+            event.target.classList.add('active');
+            event.target.classList.remove('btn-secondary');
+            event.target.classList.add('btn-primary');
+            
+            document.getElementById(tabName).classList.add('active');
+            
+            // Загружаем данные для соответствующей вкладки
+            switch(tabName) {
+                case 'overview':
+                    loadOverview();
+                    break;
+                case 'finance':
+                    loadFinance();
+                    break;
+                case 'records':
+                    loadRecords();
+                    break;
+                case 'teachers':
+                    loadTeachers();
+                    break;
+                case 'attendance':
+                    loadAttendance();
+                    break;
+                case 'settings':
+                    loadSettings();
+                    break;
+            }
+        }
+
+        function loadOwnerDashboard() {
+            loadOverview();
+        }
+
+        function loadOverview() {
+            // Загружаем популярные услуги
+            const servicesChart = document.getElementById('servicesChart');
+            servicesChart.innerHTML = `
+                <div class="service-stat">
+                    <div class="service-name">Подготовка к школе</div>
+                    <div class="service-bar">
+                        <div class="service-progress" style="width: 85%"></div>
+                    </div>
+                    <div class="service-count">35 учеников</div>
+                </div>
+                <div class="service-stat">
+                    <div class="service-name">Английский язык</div>
+                    <div class="service-bar">
+                        <div class="service-progress" style="width: 70%"></div>
+                    </div>
+                    <div class="service-count">22 ученика</div>
+                </div>
+                <div class="service-stat">
+                    <div class="service-name">Творчество</div>
+                    <div class="service-bar">
+                        <div class="service-progress" style="width: 60%"></div>
+                    </div>
+                    <div class="service-count">18 учеников</div>
+                </div>
+                <div class="service-stat">
+                    <div class="service-name">Раннее развитие</div>
+                    <div class="service-bar">
+                        <div class="service-progress" style="width: 45%"></div>
+                    </div>
+                    <div class="service-count">12 учеников</div>
+                </div>
+            `;
+        }
+
+        function loadFinance() {
+            // Загружаем историю платежей
+            const financeHistoryBody = document.getElementById('financeHistoryBody');
+            const requests = JSON.parse(localStorage.getItem('requests') || '[]');
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+
+            let historyHTML = '';
+            
+            // Добавляем примеры платежей
+            historyHTML += `
+                <tr>
+                    <td>15.01.2024</td>
+                    <td>Анна Петрова</td>
+                    <td>Максим</td>
+                    <td>Подготовка к школе</td>
+                    <td>20,000 ₸</td>
+                    <td><span class="status-paid">Оплачено</span></td>
+                </tr>
+                <tr>
+                    <td>10.01.2024</td>
+                    <td>Елена Козлова</td>
+                    <td>София</td>
+                    <td>Английский язык</td>
+                    <td>25,000 ₸</td>
+                    <td><span class="status-paid">Оплачено</span></td>
+                </tr>
+            `;
+
+            financeHistoryBody.innerHTML = historyHTML;
+        }
+
+        function loadRecords() {
+            const allRecordsBody = document.getElementById('allRecordsBody');
+            const requests = JSON.parse(localStorage.getItem('requests') || '[]');
+
+            let recordsHTML = '';
+            
+            requests.forEach(request => {
+                recordsHTML += `
+                    <tr>
+                        <td>${new Date(request.date).toLocaleDateString('ru-RU')}</td>
+                        <td>${request.parentName}</td>
+                        <td>${request.parentPhone}</td>
+                        <td>${request.childName}</td>
+                        <td>${request.childAge} лет</td>
+                        <td>${getServiceName(request.selectedService)}</td>
+                        <td><span class="status-${request.status}">${getStatusName(request.status)}</span></td>
+                        <td>
+                            <button class="btn-secondary" onclick="changeRecordStatus(${request.id}, 'confirmed')">Подтвердить</button>
+                            <button class="btn-secondary" onclick="changeRecordStatus(${request.id}, 'cancelled')">Отклонить</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            allRecordsBody.innerHTML = recordsHTML;
+        }
+
+        function loadTeachers() {
+            // Данные уже загружены в HTML
+        }
+
+        function loadAttendance() {
+            // Данные уже загружены в HTML
+        }
+
+        function loadSettings() {
+            // Инициализируем формы настроек
+            const pricesForm = document.getElementById('pricesForm');
+            if (pricesForm) {
+                pricesForm.addEventListener('submit', handlePricesUpdate);
+            }
+
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', handleContactUpdate);
+            }
+        }
+
+        function getServiceName(serviceId) {
+            const serviceNames = {
+                'early-development': 'Раннее развитие',
+                'preschool': 'Подготовка к школе',
+                'art': 'Творчество и ИЗО',
+                'dance': 'Танцы и музыка',
+                'english': 'Английский язык',
+                'individual': 'Индивидуальные занятия'
+            };
+            return serviceNames[serviceId] || serviceId;
+        }
+
+        function getStatusName(status) {
+            const statusNames = {
+                'pending': 'На рассмотрении',
+                'confirmed': 'Подтверждено',
+                'cancelled': 'Отклонено'
+            };
+            return statusNames[status] || status;
+        }
+
+        function changeRecordStatus(recordId, newStatus) {
+            const requests = JSON.parse(localStorage.getItem('requests') || '[]');
+            const requestIndex = requests.findIndex(req => req.id === recordId);
+            
+            if (requestIndex !== -1) {
+                requests[requestIndex].status = newStatus;
+                localStorage.setItem('requests', JSON.stringify(requests));
+                loadRecords(); // Перезагружаем таблицу
+                alert('Статус записи обновлен');
+            }
+        }
+
+        function filterRecords() {
+            // Логика фильтрации записей
+            loadRecords();
+        }
+
+        function handlePricesUpdate(e) {
+            e.preventDefault();
+            alert('Цены обновлены');
+        }
+
+        function handleContactUpdate(e) {
+            e.preventDefault();
+            alert('Контактная информация обновлена');
+        }
+
+        function updateDesign() {
+            const primaryColor = document.getElementById('primaryColor').value;
+            const secondaryColor = document.getElementById('secondaryColor').value;
+            
+            // Применяем цвета к сайту
+            document.documentElement.style.setProperty('--primary-color', primaryColor);
+            document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+            
+            alert('Дизайн обновлен');
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <style>
+        .overview-charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .finance-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .finance-card {
+            padding: 1.5rem;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .finance-card.income {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+
+        .finance-card.expenses {
+            background: linear-gradient(135deg, #f44336, #da190b);
+        }
+
+        .finance-card.profit {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+        }
+
+        .finance-amount {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .teachers-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .teacher-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .teacher-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .attendance-summary {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .attendance-stat {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            flex: 1;
+        }
+
+        .service-stat {
+            margin-bottom: 1rem;
+        }
+
+        .service-bar {
+            height: 20px;
+            background: #e1e5e9;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .service-progress {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .settings-sections {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .settings-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        .status-paid {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            color: #FF9800;
+            font-weight: bold;
+        }
+
+        .status-confirmed {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .status-cancelled {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .overview-charts {
+                grid-template-columns: 1fr;
+            }
+
+            .attendance-summary {
+                flex-direction: column;
+            }
+        }
+    </style>
+    
+    <!-- временно можно проставить ключи прямо на странице; в Vercel их уберём в ENV -->
+    <script>
+      window.PUBLIC_SUPABASE_URL = "https://estplmvqprqbobrjicmd.supabase.co";
+      window.PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzdHBsbXZxcHJxYm9icmppY21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwMzQxNTUsImV4cCI6MjA3NjYxMDE1NX0.dZrGpi9mJ_oZqVn0LlzVqzOQMLSH097DT2jlOGuArpc";
+    </script>
+    <script type="module" src="/supabaseClient.js"></script>
+</body>
+</html>
