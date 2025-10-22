@@ -976,24 +976,27 @@ section {
 }
 
     .nav-menu {
-        position: fixed;
-        left: -100%;
-        top: 70px;
-        flex-direction: column;
-        background-color: #667eea;
-        width: 100%;
-        text-align: center;
-        transition: 0.3s;
-        box-shadow: 0 10px 27px rgba(0,0,0,0.05);
-        padding: 2rem 0;
+        position: static !important;
+        left: auto !important;
+        top: auto !important;
+        flex-direction: row !important;
+        background: none !important;
+        width: auto !important;
+        text-align: left !important;
+        transition: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        display: flex !important;
+        gap: 1rem !important;
+        align-items: center !important;
     }
 
     .nav-menu.active {
-        left: 0;
+        left: auto !important;
     }
 
     .hamburger {
-        display: flex;
+        display: none !important;
     }
 
     .hamburger.active .bar:nth-child(2) {
@@ -1947,4 +1950,45 @@ section {
     .stat-number {
         font-size: 3rem;
     }
+}
+
+/* --- make navbar always visible --- */
+.nav-menu {
+  display: flex !important;
+  gap: 1rem;
+  align-items: center;
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  width: auto !important;
+  height: auto !important;
+  flex-direction: row !important;
+  background: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+
+/* если раньше на мобилке .nav-menu скрывали - принудительно включаем */
+.nav-menu, .nav-menu.active {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+/* кнопка-гамбургер больше не нужна */
+.hamburger { display: none !important; }
+
+/* на узких экранах тоже оставляем горизонтальный/переносящийся список */
+@media (max-width: 768px) {
+  .nav-menu {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+  .nav-item { margin: 0.25rem 0; }
+  .nav-link {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
 }

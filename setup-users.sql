@@ -14,3 +14,4 @@ on conflict (id) do nothing;
 insert into users (id, full_name, role_id)
 select id, 'Parent Test', 'parent' from auth.users where email = 'parent@test.kz'
 on conflict (id) do nothing;
+

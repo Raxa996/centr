@@ -101,3 +101,4 @@ INSERT INTO lessons (group_id, starts_at, ends_at, room) VALUES
 2. Повторите настройку БД и пользователей
 3. Создайте новый Vercel проект с production окружением
 4. Обновите переменные окружения на production ключи
+
