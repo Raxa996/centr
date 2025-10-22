@@ -1021,14 +1021,38 @@
         </div>
     </nav>
 
-    <div class="dashboard">
+    <div class="dashboard" style="display:none">
         <div class="dashboard-layout">
             <!-- Боковое меню -->
             <div class="sidebar">
                 <div class="sidebar-menu" id="crmSidebar">
-                    <!-- Элементы меню будут добавлены динамически -->
-        </div>
-    </div>
+                    <!-- Fallback: статичное меню, если JS не выполнится -->
+                    <div class="menu-item active" onclick="showCrmTab && showCrmTab('clients')">
+                        <i class="fas fa-users"></i>
+                        <span>Управление клиентами</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab && showCrmTab('bookings')">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Управление записями</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab && showCrmTab('schedule')">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Расписание занятий</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab && showCrmTab('messages')">
+                        <i class="fas fa-comments"></i>
+                        <span>Центр сообщений</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab && showCrmTab('analytics')">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Аналитика</span>
+                    </div>
+                    <div class="menu-item" onclick="showCrmTab && showCrmTab('finance')">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Финансы</span>
+                    </div>
+                </div>
+            </div>
 
             <!-- Основной контент -->
             <div class="main-content">
@@ -1310,18 +1334,9 @@
         let currentUser = null;
 
         document.addEventListener('DOMContentLoaded', () => {
-            currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
-            const isAllowed = currentUser && (
-                currentUser.role === 'admin' ||
-                currentUser.role === 'owner' ||
-                currentUser.type === 'admin' ||
-                currentUser.type === 'owner'
-            );
-            if (!isAllowed) {
-                window.location.href = 'index.html';
-                return;
-            }
+            // CRM отключена. Перенаправляем в админ‑кабинет
+            window.location.href = 'admin-dashboard.html';
+            return;
 
             // Отображаем информацию о пользователе
             const userNameElement = document.getElementById('userName');

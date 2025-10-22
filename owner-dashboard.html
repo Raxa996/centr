@@ -37,7 +37,7 @@
 
     <div class="dashboard">
         <div class="dashboard-layout">
-            <!-- Левый сайдбар с разделами владельца -->
+            <!-- Левый сайдбар владельца (пункты как в CRM) -->
             <div class="sidebar">
                 <div class="sidebar-menu" id="ownerSidebar">
                     <div class="menu-item active" onclick="showTab('overview')">
@@ -64,9 +64,32 @@
                         <i class="fas fa-cogs"></i>
                         <span>Настройки</span>
                     </div>
-                    <div class="menu-item" onclick="window.location.href='crm-dashboard.html'">
+                    <!-- Заявки открываются в админ‑кабинете -->
+                    <div class="menu-item" onclick="window.location.href='admin-dashboard.html'">
+                        <i class="fas fa-inbox"></i>
+                        <span>Заявки (админ)</span>
+                    </div>
+
+                    <!-- CRM как раскрывающийся список (только для владельца) -->
+                    <div class="menu-item" onclick="toggleCrmSubmenu(event)" style="cursor:pointer">
                         <i class="fas fa-briefcase"></i>
                         <span>CRM</span>
+                        <i class="fas fa-chevron-down" style="margin-left:auto;font-size:0.85rem;opacity:0.7"></i>
+                    </div>
+                    <div class="submenu" id="crmSubmenu" style="display:none;padding-left:16px">
+                        <div class="menu-item" onclick="openCrm('clients')"><i class="fas fa-users"></i><span>Управление клиентами</span></div>
+                        <div class="menu-item" onclick="openCrm('bookings')"><i class="fas fa-calendar-check"></i><span>Управление записями</span></div>
+                        <div class="menu-item" onclick="openCrm('schedule')"><i class="fas fa-calendar-alt"></i><span>Расписание занятий</span></div>
+                        <div class="menu-item" onclick="openCrm('messages')"><i class="fas fa-comments"></i><span>Центр сообщений</span></div>
+                        <div class="menu-item" onclick="openCrm('analytics')"><i class="fas fa-chart-bar"></i><span>Аналитика и отчеты</span></div>
+                        <div class="menu-item" onclick="openCrm('finance')"><i class="fas fa-money-bill-wave"></i><span>Финансовая отчетность</span></div>
+                        <div class="menu-item" onclick="openCrm('confirmBooking')"><i class="fas fa-check-circle"></i><span>Подтверждение записей</span></div>
+                        <div class="menu-item" onclick="openCrm('bookingCalendar')"><i class="fas fa-calendar"></i><span>Календарь записи</span></div>
+                        <div class="menu-item" onclick="openCrm('lessons')"><i class="fas fa-book-open"></i><span>Уроки</span></div>
+                        <div class="menu-item" onclick="openCrm('whatsapp')"><i class="fab fa-whatsapp"></i><span>Рассылка родителям</span></div>
+                        <div class="menu-item" onclick="openCrm('payment')"><i class="fas fa-credit-card"></i><span>Прием оплаты</span></div>
+                        <div class="menu-item" onclick="openCrm('dailyReport')"><i class="fas fa-receipt"></i><span>Отчет за сегодня</span></div>
+                        <div class="menu-item" onclick="openCrm('staffManagement')"><i class="fas fa-user-cog"></i><span>Управление сотрудниками</span></div>
                     </div>
                 </div>
             </div>
@@ -495,6 +518,21 @@
             </div>
         </div>
     </div>
+
+    <script>
+    function toggleCrmSubmenu(event) {
+        const submenu = document.getElementById('crmSubmenu');
+        if (!submenu) return;
+        submenu.style.display = submenu.style.display === 'none' ? 'block' : 'none';
+        event?.stopPropagation?.();
+    }
+
+    function openCrm(tab) {
+        // Открываем CRM в новой вкладке с хэшем для выбора раздела
+        const url = `crm-dashboard.html#${encodeURIComponent(tab)}`;
+        window.open(url, '_blank');
+    }
+    </script>
 
     <script>
         // Инициализация кабинета владельца
