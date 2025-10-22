@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRM система - Центр "Радуга"</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+      window.PUBLIC_SUPABASE_URL = "https://estplmvqprqbobrjicmd.supabase.co";
+      window.PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzdHBsbXZxcHJxYm9icmppY21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwMzQxNTUsImV4cCI6MjA3NjYxMDE1NX0.dZrGpi9mJ_oZqVn0LlzVqzOQMLSH097DT2jlOGuArpc";
+    </script>
+    <script type="module" src="./supabaseClient.js"></script>
+    <script type="module" src="./script.js"></script>
     <style>
         .crm-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -1001,7 +1007,7 @@
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="index.html" class="nav-link">Главная</a>
+                    <a href="./index.html" class="nav-link">Главная</a>
                 </li>
                 <li class="nav-item">
                     <span class="nav-link" id="userName">Пользователь</span>
@@ -1306,7 +1312,7 @@
             currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
             if (!currentUser || (currentUser.type !== 'admin' && currentUser.type !== 'owner')) {
-                window.location.href = 'index.html';
+                window.location.href = './index.html';
                 return;
             }
 
@@ -1824,7 +1830,7 @@
                             </button>
                         </td>
                     </tr>
-                `).join('');
+            `).join('');
 
                 clientsTableBody.innerHTML = clientsHtml || '<tr><td colspan="5" style="text-align: center; padding: 2rem;">Клиенты не найдены</td></tr>';
             }
@@ -2770,15 +2776,9 @@
             }
         });
     </script>
-    <!-- временно можно проставить ключи прямо на странице; в Vercel их уберём в ENV -->
-    <script>
-      window.PUBLIC_SUPABASE_URL = "https://estplmvqprqbobrjicmd.supabase.co";
-      window.PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzdHBsbXZxcHJxYm9icmppY21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwMzQxNTUsImV4cCI6MjA3NjYxMDE1NX0.dZrGpi9mJ_oZqVn0LlzVqzOQMLSH097DT2jlOGuArpc";
-    </script>
     <script type="module">
-        import { supa } from '/supabaseClient.js';
+        import { supa } from './supabaseClient.js';
         window.supa = supa;
     </script>
-    <script type="module" src="/script.js"></script>
 </body>
 </html>
