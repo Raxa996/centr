@@ -1,17 +1,33 @@
-// Импорт Supabase клиента
-import { supa, signInEmailPassword, getSession } from "supabaseClient.js";
-
 // Глобальные переменные
 let selectedServices = [];
 let currentUser = null;
 
-// Инициализация при загрузке страницы
-document.addEventListener('DOMContentLoaded', function() {
+// Функция инициализации приложения
+window.initApp = function() {
+    console.log('Initializing app with Supabase...');
+    
     // Инициализация мобильного меню
     initMobileMenu();
     
+    // Инициализация модальных окон
+    initModals();
+    
     // Инициализация форм
     initForms();
+    
+    // Инициализация Supabase
+    initSupabase();
+};
+
+// Инициализация при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    // Если Supabase уже загружен, инициализируем сразу
+    if (window.supa) {
+        window.initApp();
+    } else {
+        // Иначе ждем загрузки Supabase
+        console.log('Waiting for Supabase to load...');
+    }
     
     // Инициализация модальных окон
     initModals();
@@ -189,7 +205,7 @@ async function handleLogin(e, userType) {
 
     try {
         // Аутентификация через Supabase
-        const { data, error } = await supa.auth.signInWithPassword({ 
+        const { data, error } = await window.supa.auth.signInWithPassword({ 
             email: loginValue, 
             password: password 
         });
@@ -231,7 +247,7 @@ async function handleStaffLogin(e) {
 
     try {
         // Аутентификация через Supabase
-        const { data, error } = await supa.auth.signInWithPassword({ 
+        const { data, error } = await window.supa.auth.signInWithPassword({ 
             email: login, 
             password: password 
         });
@@ -763,7 +779,7 @@ document.addEventListener('DOMContentLoaded', initDemoData);
 
 // Загрузка уроков/занятий
 async function loadLessons(fromISO, toISO) {
-    const { data, error } = await supa
+    const { data, error } = await window.supa
         .from("lessons")
         .select("*, groups(title, teacher_id)")
         .gte("starts_at", fromISO)
@@ -778,7 +794,7 @@ async function loadLessons(fromISO, toISO) {
 
 // Создание записи на занятие
 async function createBooking(child_id, lesson_id, comment = "") {
-    const { error } = await supa.from("bookings").insert({ 
+    const { error } = await window.supa.from("bookings").insert({ 
         child_id, 
         lesson_id, 
         comment 
@@ -792,7 +808,7 @@ async function createBooking(child_id, lesson_id, comment = "") {
 
 // Обновление статуса записи
 async function updateBookingStatus(id, status) {
-    const { error } = await supa.from("bookings").update({ status }).eq("id", id);
+    const { error } = await window.supa.from("bookings").update({ status }).eq("id", id);
     if (error) {
         console.error('Error updating booking status:', error);
         alert('Ошибка при обновлении статуса: ' + error.message);
@@ -802,7 +818,7 @@ async function updateBookingStatus(id, status) {
 
 // Создание счета
 async function createInvoice(parent_id, amount, due) {
-    const { error } = await supa.from("invoices").insert({ 
+    const { error } = await window.supa.from("invoices").insert({ 
         parent_id, 
         amount, 
         due_date: due 
@@ -816,7 +832,7 @@ async function createInvoice(parent_id, amount, due) {
 
 // Добавление оплаты
 async function addPayment(invoice_id, amount, provider = "cash", tx_id = null) {
-    const { error } = await supa.from("payments").insert({ 
+    const { error } = await window.supa.from("payments").insert({ 
         invoice_id, 
         amount, 
         provider, 
@@ -832,11 +848,11 @@ async function addPayment(invoice_id, amount, provider = "cash", tx_id = null) {
 // Проверка сессии и инициализация realtime
 async function initSupabase() {
     try {
-        const session = await getSession();
+        const session = await window.getSession();
         if (session) {
             console.log('User session found:', session.user);
             // Восстанавливаем currentUser из сессии
-            const { data: userRows } = await supa
+            const { data: userRows } = await window.supa
                 .from("users")
                 .select("role_id, full_name")
                 .eq("id", session.user.id)
@@ -856,7 +872,7 @@ async function initSupabase() {
         }
         
         // Подключаем realtime обновления
-        supa.channel("db")
+        window.supa.channel("db")
             .on("postgres_changes", { event: "*", schema: "public", table: "lessons" }, p => window.refreshLessons?.(p.new))
             .on("postgres_changes", { event: "*", schema: "public", table: "bookings" }, p => window.refreshBookings?.(p.new))
             .on("postgres_changes", { event: "*", schema: "public", table: "invoices" }, p => window.refreshInvoices?.(p.new))
@@ -870,10 +886,10 @@ async function initSupabase() {
 
 // Функция редиректа после логина по роли
 async function afterLoginRedirect() {
-    const { data: { user } } = await supa.auth.getUser();
+    const { data: { user } } = await window.supa.auth.getUser();
     if (!user) return;
 
-    const { data: rows, error } = await supa.from("users").select("role_id").eq("id", user.id).limit(1).maybeSingle();
+    const { data: rows, error } = await window.supa.from("users").select("role_id").eq("id", user.id).limit(1).maybeSingle();
     if (error) { 
         console.error('Error getting user role:', error); 
         return; 
