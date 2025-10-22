@@ -2,6 +2,68 @@
 let selectedServices = [];
 let currentUser = null;
 
+// Функция для показа ошибок на сайте
+function showError(message) {
+    // Создаем элемент для отображения ошибки
+    let errorDiv = document.getElementById('error-message');
+    if (!errorDiv) {
+        errorDiv = document.createElement('div');
+        errorDiv.id = 'error-message';
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff4444;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 10000;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        `;
+        document.body.appendChild(errorDiv);
+    }
+    
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+    
+    // Скрываем через 5 секунд
+    setTimeout(() => {
+        errorDiv.style.display = 'none';
+    }, 5000);
+}
+
+// Функция для показа успешных сообщений
+function showSuccess(message) {
+    // Создаем элемент для отображения успеха
+    let successDiv = document.getElementById('success-message');
+    if (!successDiv) {
+        successDiv = document.createElement('div');
+        successDiv.id = 'success-message';
+        successDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #44ff44;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 10000;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        `;
+        document.body.appendChild(successDiv);
+    }
+    
+    successDiv.textContent = message;
+    successDiv.style.display = 'block';
+    
+    // Скрываем через 3 секунды
+    setTimeout(() => {
+        successDiv.style.display = 'none';
+    }, 3000);
+}
+
 // Функция инициализации приложения
 window.initApp = function() {
     console.log('Initializing app with Supabase...');
@@ -21,12 +83,33 @@ window.initApp = function() {
 
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, checking Supabase...');
+    
     // Если Supabase уже загружен, инициализируем сразу
     if (window.supa) {
+        console.log('Supabase already loaded');
         window.initApp();
     } else {
         // Иначе ждем загрузки Supabase
         console.log('Waiting for Supabase to load...');
+        
+        // Проверяем каждые 100мс, пока Supabase не загрузится
+        const checkSupabase = setInterval(() => {
+            if (window.supa) {
+                console.log('Supabase loaded, initializing app');
+                window.initApp();
+                clearInterval(checkSupabase);
+            }
+        }, 100);
+        
+        // Таймаут через 5 секунд
+        setTimeout(() => {
+            if (!window.supa) {
+                console.error('Supabase failed to load after 5 seconds');
+                showError('Ошибка загрузки Supabase. Проверьте подключение к интернету.');
+                clearInterval(checkSupabase);
+            }
+        }, 5000);
     }
     
     // Инициализация модальных окон
@@ -198,20 +281,47 @@ async function handleLogin(e, userType) {
 
     if (!loginValue || !password) {
         alert('Пожалуйста, заполните все поля:\n' + 
-              (userType === 'parent' ? '- Email' : '- Email') + 
+              (userType === 'parent' ? '- Номер телефона' : '- Email') + 
               '\n- Пароль');
         return;
+    }
+
+    // Для родителей - используем стандартный email
+    let emailForAuth = loginValue;
+    if (userType === 'parent') {
+        // Если введен номер телефона, конвертируем в email
+        if (loginValue.includes('+') || loginValue.match(/\d{10,}/)) {
+            const cleanPhone = loginValue.replace(/\D/g, '');
+            emailForAuth = `parent_${cleanPhone}@test.kz`;
+        } else {
+            // Если введен email, используем как есть
+            emailForAuth = loginValue;
+        }
     }
 
     try {
         // Аутентификация через Supabase
         const { data, error } = await window.supa.auth.signInWithPassword({ 
-            email: loginValue, 
+            email: emailForAuth, 
             password: password 
         });
         
         if (error) {
-            alert('Ошибка входа: ' + error.message);
+            console.error('Login error:', error);
+            showError('Ошибка входа: ' + error.message);
+            return;
+        }
+
+        // Получаем информацию о пользователе из таблицы users
+        const { data: userData, error: userError } = await window.supa
+            .from('users')
+            .select('role_id, full_name')
+            .eq('id', data.user.id)
+            .single();
+
+        if (userError) {
+            console.error('Error getting user data:', userError);
+            showError('Ошибка получения данных пользователя: ' + userError.message);
             return;
         }
 
@@ -219,17 +329,20 @@ async function handleLogin(e, userType) {
         currentUser = {
             id: data.user.id,
             email: data.user.email,
-            role: null, // будет заполнено в afterLoginRedirect
-            name: data.user.email
+            role: userData?.role_id || 'parent',
+            name: userData?.full_name || data.user.email
         };
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
-        // Редирект по роли через функцию
+        console.log('Login successful, user data:', currentUser);
+        showSuccess('Вход выполнен успешно! Переход в кабинет...');
+
+        // Редирект по роли
         await afterLoginRedirect();
 
     } catch (error) {
         console.error('Login error:', error);
-        alert('Ошибка входа: ' + error.message);
+        showError('Ошибка входа: ' + error.message);
     }
 }
 
@@ -253,7 +366,21 @@ async function handleStaffLogin(e) {
         });
         
         if (error) {
-            alert('Ошибка входа: ' + error.message);
+            console.error('Staff login error:', error);
+            showError('Ошибка входа: ' + error.message);
+            return;
+        }
+
+        // Получаем информацию о пользователе из таблицы users
+        const { data: userData, error: userError } = await window.supa
+            .from('users')
+            .select('role_id, full_name')
+            .eq('id', data.user.id)
+            .single();
+
+        if (userError) {
+            console.error('Error getting user data:', userError);
+            showError('Ошибка получения данных пользователя: ' + userError.message);
             return;
         }
 
@@ -261,17 +388,20 @@ async function handleStaffLogin(e) {
         currentUser = {
             id: data.user.id,
             email: data.user.email,
-            role: null, // будет заполнено в afterLoginRedirect
-            name: data.user.email
+            role: userData?.role_id || 'admin',
+            name: userData?.full_name || data.user.email
         };
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
-        // Редирект по роли через функцию
+        console.log('Staff login successful, user data:', currentUser);
+        showSuccess('Вход выполнен успешно! Переход в кабинет...');
+
+        // Редирект по роли
         await afterLoginRedirect();
 
     } catch (error) {
         console.error('Staff login error:', error);
-        alert('Ошибка входа: ' + error.message);
+        showError('Ошибка входа: ' + error.message);
     }
 }
 
@@ -869,6 +999,15 @@ async function initSupabase() {
             };
             
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            // Если пользователь уже авторизован, показываем информацию, но НЕ делаем автоматический редирект
+            if (role) {
+                console.log('User already logged in, but not auto-redirecting');
+                showSuccess('Вы уже авторизованы как ' + role + '. Нажмите "Войти" для перехода в кабинет.');
+                // Убираем автоматический редирект
+                // await afterLoginRedirect();
+                // return;
+            }
         }
         
         // Подключаем realtime обновления
@@ -886,20 +1025,118 @@ async function initSupabase() {
 
 // Функция редиректа после логина по роли
 async function afterLoginRedirect() {
-    const { data: { user } } = await window.supa.auth.getUser();
-    if (!user) return;
+    try {
+        console.log('Starting afterLoginRedirect...');
+        
+        const { data: { user } } = await window.supa.auth.getUser();
+        if (!user) {
+            console.error('No user found for redirect');
+            showError('Пользователь не найден для редиректа');
+            return;
+        }
 
-    const { data: rows, error } = await window.supa.from("users").select("role_id").eq("id", user.id).limit(1).maybeSingle();
-    if (error) { 
-        console.error('Error getting user role:', error); 
-        return; 
+        console.log('Getting user role for:', user.email);
+        
+        const { data: rows, error } = await window.supa.from("users").select("role_id").eq("id", user.id).limit(1).maybeSingle();
+        if (error) { 
+            console.error('Error getting user role:', error); 
+            showError('Ошибка получения роли пользователя: ' + error.message);
+            return; 
+        }
+        
+        const role = rows?.role_id;
+        console.log('User role:', role);
+        
+        // Определяем URL для редиректа
+        let redirectUrl = '';
+        if (role === "owner") {
+            redirectUrl = "owner-dashboard.html";
+            console.log('Redirecting to owner dashboard');
+        } else if (role === "admin") {
+            redirectUrl = "admin-dashboard.html";
+            console.log('Redirecting to admin dashboard');
+        } else if (role === "teacher") {
+            redirectUrl = "crm-dashboard.html";
+            console.log('Redirecting to CRM dashboard');
+        } else {
+            redirectUrl = "parent-dashboard.html";
+            console.log('Redirecting to parent dashboard');
+        }
+        
+        // Проверяем, существует ли файл
+        console.log('Attempting redirect to:', redirectUrl);
+        
+        // Немедленный редирект
+        console.log('Executing redirect to:', redirectUrl);
+        
+        // Создаем кнопку для ручного перехода на случай, если редирект не сработает
+        const manualRedirect = document.createElement('div');
+        manualRedirect.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 10000;
+            text-align: center;
+        `;
+        manualRedirect.innerHTML = `
+            <h3>Переход в кабинет</h3>
+            <p>Роль: ${role}</p>
+            <p>Переход на: ${redirectUrl}</p>
+            <button onclick="window.location.href='${redirectUrl}'" style="
+                background: #667eea;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin: 10px;
+                font-size: 16px;
+            ">Перейти в кабинет</button>
+            <button onclick="this.parentElement.remove()" style="
+                background: #ccc;
+                color: black;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin: 10px;
+                font-size: 16px;
+            ">Отмена</button>
+        `;
+        document.body.appendChild(manualRedirect);
+        
+        // Пытаемся автоматический редирект
+        try {
+            window.location.href = redirectUrl;
+        } catch (error) {
+            console.error('Redirect failed:', error);
+            showError('Ошибка редиректа: ' + error.message);
+        }
+        
+    } catch (error) {
+        console.error('Error in afterLoginRedirect:', error);
+        showError('Ошибка редиректа: ' + error.message);
     }
-    const role = rows?.role_id;
-    if (role === "owner")      location.href = "/owner-dashboard.html";
-    else if (role === "admin") location.href = "/admin-dashboard.html";
-    else if (role === "teacher") location.href = "/crm-dashboard.html";
-    else                        location.href = "/parent-dashboard.html";
 }
+
+// Функция для принудительного редиректа (можно вызвать из консоли)
+window.forceRedirect = function(role) {
+    let url = '';
+    switch(role) {
+        case 'owner': url = 'owner-dashboard.html'; break;
+        case 'admin': url = 'admin-dashboard.html'; break;
+        case 'teacher': url = 'crm-dashboard.html'; break;
+        default: url = 'parent-dashboard.html';
+    }
+    
+    console.log('Force redirect to:', url);
+    window.location.href = url;
+};
 
 // Инициализация Supabase при загрузке
 document.addEventListener('DOMContentLoaded', initSupabase);

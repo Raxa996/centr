@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проверка файлов кабинетов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .file-check {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .exists { background: #d4edda; border-color: #c3e6cb; }
+        .missing { background: #f8d7da; border-color: #f5c6cb; }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #5a6fd8; }
+    </style>
+</head>
+<body>
+    <h1>Проверка файлов кабинетов</h1>
+    
+    <div id="results"></div>
+    
+    <button onclick="checkFiles()">Проверить файлы</button>
+    <button onclick="testRedirect()">Тест редиректа</button>
+    
+    <script>
+        const dashboardFiles = [
+            'owner-dashboard.html',
+            'admin-dashboard.html', 
+            'crm-dashboard.html',
+            'parent-dashboard.html'
+        ];
+        
+        async function checkFiles() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h2>Проверка файлов:</h2>';
+            
+            for (const file of dashboardFiles) {
+                const fileCheck = document.createElement('div');
+                fileCheck.className = 'file-check';
+                
+                try {
+                    const response = await fetch(file, { method: 'HEAD' });
+                    if (response.ok) {
+                        fileCheck.className += ' exists';
+                        fileCheck.innerHTML = `✅ ${file} - существует`;
+                    } else {
+                        fileCheck.className += ' missing';
+                        fileCheck.innerHTML = `❌ ${file} - не найден (${response.status})`;
+                    }
+                } catch (error) {
+                    fileCheck.className += ' missing';
+                    fileCheck.innerHTML = `❌ ${file} - ошибка: ${error.message}`;
+                }
+                
+                resultsDiv.appendChild(fileCheck);
+            }
+        }
+        
+        function testRedirect() {
+            const url = prompt('Введите URL для теста редиректа:', 'admin-dashboard.html');
+            if (url) {
+                console.log('Testing redirect to:', url);
+                window.location.href = url;
+            }
+        }
+        
+        // Автоматическая проверка при загрузке
+        window.addEventListener('load', checkFiles);
+    </script>
+</body>
+</html>
