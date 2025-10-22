@@ -1,5 +1,5 @@
 // Импорт Supabase клиента
-import { supa, signInEmailPassword, getSession } from "./supabaseClient.js";
+import { supa, signInEmailPassword, getSession } from "supabaseClient.js";
 
 // Глобальные переменные
 let selectedServices = [];
