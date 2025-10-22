@@ -995,7 +995,9 @@ async function initSupabase() {
                 id: session.user.id,
                 email: session.user.email,
                 role: role,
-                name: fullName || session.user.email
+                name: fullName || session.user.email,
+                // type для обратной совместимости со старыми проверками в кабинетах
+                type: role
             };
             
             localStorage.setItem('currentUser', JSON.stringify(currentUser));

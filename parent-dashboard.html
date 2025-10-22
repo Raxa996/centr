@@ -328,7 +328,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Проверяем авторизацию
             const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
-            if (!currentUser || currentUser.type !== 'parent') {
+            const isParent = currentUser && (currentUser.role === 'parent' || currentUser.type === 'parent');
+            if (!isParent) {
                 window.location.href = 'index.html';
                 return;
             }

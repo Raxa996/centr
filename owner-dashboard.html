@@ -491,7 +491,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Проверяем авторизацию
             const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
-            if (!currentUser || currentUser.type !== 'owner') {
+            const isOwner = currentUser && (currentUser.role === 'owner' || currentUser.type === 'owner');
+            if (!isOwner) {
                 window.location.href = 'index.html';
                 return;
             }

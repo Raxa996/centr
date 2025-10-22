@@ -391,7 +391,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Проверяем авторизацию
             const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
-            if (!currentUser || currentUser.type !== 'admin') {
+            // Пускаем, если есть роль admin либо тип admin (поддержка старой логики)
+            const isAdmin = currentUser && (currentUser.role === 'admin' || currentUser.type === 'admin');
+            if (!isAdmin) {
                 window.location.href = 'index.html';
                 return;
             }
