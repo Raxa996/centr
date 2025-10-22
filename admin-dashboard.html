@@ -82,6 +82,15 @@
                         <i class="fas fa-chalkboard"></i>
                         <span>Занятия</span>
                     </div>
+                    <!-- Заявки и записи -->
+                    <div class="menu-item" onclick="showTab('requests')">
+                        <i class="fas fa-inbox"></i>
+                        <span>Заявки</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('bookings')">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Записи</span>
+                    </div>
                 </div>
             </div>
             <div class="main-content">
@@ -298,6 +307,98 @@
 
                     <div class="classes-list" id="classesList">
                         <!-- Заполняется JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="requests" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Заявки от клиентов</h2>
+                    
+                    <div class="requests-controls">
+                        <div class="requests-filters">
+                            <select id="requestStatusFilter">
+                                <option value="">Все статусы</option>
+                                <option value="new">Новые</option>
+                                <option value="processing">В обработке</option>
+                                <option value="completed">Обработанные</option>
+                            </select>
+                            <select id="requestServiceFilter">
+                                <option value="">Все услуги</option>
+                                <option value="early-development">Раннее развитие</option>
+                                <option value="preschool">Подготовка к школе</option>
+                                <option value="art">Творчество</option>
+                                <option value="english">Английский</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" onclick="refreshRequests()">
+                            <i class="fas fa-sync"></i> Обновить
+                        </button>
+                    </div>
+
+                    <div class="requests-list" id="requestsList">
+                        <!-- Список заявок будет загружен здесь -->
+                        <div class="request-item">
+                            <div class="request-header">
+                                <h4>Иван Петров</h4>
+                                <span class="request-status new">Новая</span>
+                            </div>
+                            <div class="request-details">
+                                <p><strong>Телефон:</strong> +7 777 123 45 67</p>
+                                <p><strong>Email:</strong> ivan.petrov@email.com</p>
+                                <p><strong>Услуга:</strong> Подготовка к школе</p>
+                                <p><strong>Ребенок:</strong> Максим Петров (5 лет)</p>
+                                <p><strong>Дата заявки:</strong> 15.01.2024</p>
+                                <p><strong>Комментарий:</strong> Хотелось бы записаться на утренние занятия</p>
+                            </div>
+                            <div class="request-actions">
+                                <button class="btn-primary" onclick="processRequest(1, 'processing')">Взять в работу</button>
+                                <button class="btn-secondary" onclick="processRequest(1, 'completed')">Обработать</button>
+                                <button class="btn-danger" onclick="processRequest(1, 'cancelled')">Отклонить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="bookings" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Записи на занятия</h2>
+                    
+                    <div class="bookings-controls">
+                        <div class="bookings-filters">
+                            <select id="bookingStatusFilter">
+                                <option value="">Все статусы</option>
+                                <option value="pending">Ожидают подтверждения</option>
+                                <option value="confirmed">Подтвержденные</option>
+                                <option value="cancelled">Отмененные</option>
+                            </select>
+                            <input type="date" id="bookingDateFilter" placeholder="Фильтр по дате">
+                        </div>
+                        <button class="btn-primary" onclick="refreshBookings()">
+                            <i class="fas fa-sync"></i> Обновить
+                        </button>
+                    </div>
+
+                    <div class="bookings-list" id="bookingsList">
+                        <!-- Список записей будет загружен здесь -->
+                        <div class="booking-item">
+                            <div class="booking-header">
+                                <h4>Анна Смирнова</h4>
+                                <span class="booking-status pending">Ожидает</span>
+                            </div>
+                            <div class="booking-details">
+                                <p><strong>Ребенок:</strong> София Смирнова (4 года)</p>
+                                <p><strong>Услуга:</strong> Раннее развитие</p>
+                                <p><strong>Дата:</strong> 20.01.2024, 10:00</p>
+                                <p><strong>Телефон:</strong> +7 777 987 65 43</p>
+                            </div>
+                            <div class="booking-actions">
+                                <button class="btn-primary" onclick="confirmBooking(1)">Подтвердить</button>
+                                <button class="btn-secondary" onclick="rescheduleBooking(1)">Перенести</button>
+                                <button class="btn-danger" onclick="cancelBooking(1)">Отменить</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

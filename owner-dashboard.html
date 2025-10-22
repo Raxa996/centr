@@ -70,26 +70,58 @@
                         <span>Заявки (админ)</span>
                     </div>
 
-                    <!-- CRM как раскрывающийся список (только для владельца) -->
-                    <div class="menu-item" onclick="toggleCrmSubmenu(event)" style="cursor:pointer">
-                        <i class="fas fa-briefcase"></i>
-                        <span>CRM</span>
-                        <i class="fas fa-chevron-down" style="margin-left:auto;font-size:0.85rem;opacity:0.7"></i>
+                    <!-- CRM функционал как отдельные вкладки -->
+                    <div class="menu-item" onclick="showTab('clients')">
+                        <i class="fas fa-users"></i>
+                        <span>Управление клиентами</span>
                     </div>
-                    <div class="submenu" id="crmSubmenu" style="display:none;padding-left:16px">
-                        <div class="menu-item" onclick="openCrm('clients')"><i class="fas fa-users"></i><span>Управление клиентами</span></div>
-                        <div class="menu-item" onclick="openCrm('bookings')"><i class="fas fa-calendar-check"></i><span>Управление записями</span></div>
-                        <div class="menu-item" onclick="openCrm('schedule')"><i class="fas fa-calendar-alt"></i><span>Расписание занятий</span></div>
-                        <div class="menu-item" onclick="openCrm('messages')"><i class="fas fa-comments"></i><span>Центр сообщений</span></div>
-                        <div class="menu-item" onclick="openCrm('analytics')"><i class="fas fa-chart-bar"></i><span>Аналитика и отчеты</span></div>
-                        <div class="menu-item" onclick="openCrm('finance')"><i class="fas fa-money-bill-wave"></i><span>Финансовая отчетность</span></div>
-                        <div class="menu-item" onclick="openCrm('confirmBooking')"><i class="fas fa-check-circle"></i><span>Подтверждение записей</span></div>
-                        <div class="menu-item" onclick="openCrm('bookingCalendar')"><i class="fas fa-calendar"></i><span>Календарь записи</span></div>
-                        <div class="menu-item" onclick="openCrm('lessons')"><i class="fas fa-book-open"></i><span>Уроки</span></div>
-                        <div class="menu-item" onclick="openCrm('whatsapp')"><i class="fab fa-whatsapp"></i><span>Рассылка родителям</span></div>
-                        <div class="menu-item" onclick="openCrm('payment')"><i class="fas fa-credit-card"></i><span>Прием оплаты</span></div>
-                        <div class="menu-item" onclick="openCrm('dailyReport')"><i class="fas fa-receipt"></i><span>Отчет за сегодня</span></div>
-                        <div class="menu-item" onclick="openCrm('staffManagement')"><i class="fas fa-user-cog"></i><span>Управление сотрудниками</span></div>
+                    <div class="menu-item" onclick="showTab('crmBookings')">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Управление записями</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('crmSchedule')">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Расписание занятий</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('messages')">
+                        <i class="fas fa-comments"></i>
+                        <span>Центр сообщений</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('analytics')">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Аналитика и отчеты</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('crmFinance')">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Финансовая отчетность</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('confirmBooking')">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Подтверждение записей</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('bookingCalendar')">
+                        <i class="fas fa-calendar"></i>
+                        <span>Календарь записи</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('lessons')">
+                        <i class="fas fa-book-open"></i>
+                        <span>Уроки</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('whatsapp')">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>Рассылка родителям</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('payment')">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Прием оплаты</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('dailyReport')">
+                        <i class="fas fa-receipt"></i>
+                        <span>Отчет за сегодня</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('staffManagement')">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Управление сотрудниками</span>
                     </div>
                 </div>
             </div>
@@ -516,6 +548,137 @@
                     </div>
                 </div>
             </div>
+
+            <!-- CRM функционал -->
+            <div id="clients" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Управление клиентами</h2>
+                    <div class="clients-table-container">
+                        <table class="clients-table" id="clientsTable">
+                            <thead>
+                                <tr>
+                                    <th>Клиент</th>
+                                    <th>Телефон</th>
+                                    <th>Последняя операция</th>
+                                    <th>Сумма</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientsTableBody">
+                                <!-- Данные клиентов будут загружены здесь -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="crmBookings" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Управление записями</h2>
+                    <div class="records-table" id="recordsTable">
+                        <!-- Таблица записей будет загружена здесь -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="crmSchedule" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Расписание занятий</h2>
+                    <div id="scheduleContent">
+                        <!-- Расписание будет загружено здесь -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="messages" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Центр сообщений</h2>
+                    <div id="messagesContent">
+                        <!-- Сообщения будут загружены здесь -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="analytics" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Аналитика и отчеты</h2>
+                    <div id="analyticsContent">
+                        <!-- Аналитика будет загружена здесь -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="crmFinance" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Финансовая отчетность</h2>
+                    <div id="financeContent">
+                        <!-- Финансы будут загружены здесь -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="confirmBooking" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Подтверждение записей</h2>
+                    <div id="confirmBookingContent">
+                        <!-- Подтверждение записей -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="bookingCalendar" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Календарь записи</h2>
+                    <div id="bookingCalendarContent">
+                        <!-- Календарь записи -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="lessons" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Уроки</h2>
+                    <div id="lessonsContent">
+                        <!-- Уроки -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="whatsapp" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Рассылка родителям</h2>
+                    <div id="whatsappContent">
+                        <!-- Рассылка в WhatsApp -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="payment" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Прием оплаты</h2>
+                    <div id="paymentContent">
+                        <!-- Прием оплаты -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="dailyReport" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Отчет за сегодня</h2>
+                    <div id="dailyReportContent">
+                        <!-- Отчет по деньгам за сегодня -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="staffManagement" class="tab-content">
+                <div class="dashboard-card">
+                    <h2 class="dashboard-title">Управление сотрудниками</h2>
+                    <div id="staffManagementContent">
+                        <!-- Управление сотрудниками -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -596,6 +759,46 @@
                     break;
                 case 'settings':
                     loadSettings();
+                    break;
+                // CRM функции
+                case 'clients':
+                    loadClients();
+                    break;
+                case 'crmBookings':
+                    loadCrmBookings();
+                    break;
+                case 'crmSchedule':
+                    loadCrmSchedule();
+                    break;
+                case 'messages':
+                    loadMessages();
+                    break;
+                case 'analytics':
+                    loadAnalytics();
+                    break;
+                case 'crmFinance':
+                    loadCrmFinance();
+                    break;
+                case 'confirmBooking':
+                    loadConfirmBooking();
+                    break;
+                case 'bookingCalendar':
+                    loadBookingCalendar();
+                    break;
+                case 'lessons':
+                    loadLessons();
+                    break;
+                case 'whatsapp':
+                    loadWhatsApp();
+                    break;
+                case 'payment':
+                    loadPayment();
+                    break;
+                case 'dailyReport':
+                    loadDailyReport();
+                    break;
+                case 'staffManagement':
+                    loadStaffManagement();
                     break;
             }
         }
@@ -775,6 +978,509 @@
             document.documentElement.style.setProperty('--secondary-color', secondaryColor);
             
             alert('Дизайн обновлен');
+        }
+
+        // CRM функции
+        function loadClients() {
+            const clients = [
+                {
+                    id: 1,
+                    name: 'Малика',
+                    phone: '+77015557752',
+                    lastOperation: '21/10/2025',
+                    totalAmount: 59990,
+                    children: [
+                        { name: 'Айша', age: 7 },
+                        { name: 'Данияр', age: 5 }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: 'Анна Петрова',
+                    phone: '+7 777 123 45 67',
+                    lastOperation: '20/10/2025',
+                    totalAmount: 25000,
+                    children: [
+                        { name: 'Мария', age: 5 }
+                    ]
+                }
+            ];
+
+            const clientsTableBody = document.getElementById('clientsTableBody');
+            if (clientsTableBody) {
+                const clientsHtml = clients.map(client => `
+                    <tr>
+                        <td class="client-name">${client.name}</td>
+                        <td class="phone-number">${client.phone}</td>
+                        <td>${client.lastOperation}</td>
+                        <td class="amount">${client.totalAmount.toLocaleString()}₸</td>
+                        <td class="action-buttons">
+                            <button class="btn-action view" onclick="showClientDetails('${client.id}')" title="Подробная информация">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+
+                clientsTableBody.innerHTML = clientsHtml;
+            }
+        }
+
+        function loadCrmBookings() {
+            const appointments = [
+                { parentName: 'Анна Петрова', childName: 'Мария', service: 'Подготовка к школе', date: new Date().toISOString(), time: '10:00', status: 'confirmed' },
+                { parentName: 'Елена Козлова', childName: 'Дмитрий', service: 'Английский', date: new Date().toISOString(), time: '11:30', status: 'pending' }
+            ];
+
+            const bookingsHtml = appointments.map(appointment => `
+                <tr>
+                    <td>${appointment.parentName}</td>
+                    <td>${appointment.childName}</td>
+                    <td>${appointment.service}</td>
+                    <td>${new Date(appointment.date).toLocaleDateString('ru-RU')}</td>
+                    <td>${appointment.time}</td>
+                    <td><span class="status-${appointment.status}">${appointment.status === 'confirmed' ? 'Подтверждено' : 'Ожидает'}</span></td>
+                </tr>
+            `).join('');
+
+            const recordsTable = document.getElementById('recordsTable');
+            if (recordsTable) {
+                recordsTable.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Родитель</th>
+                                <th>Ребенок</th>
+                                <th>Услуга</th>
+                                <th>Дата</th>
+                                <th>Время</th>
+                                <th>Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${bookingsHtml}
+                        </tbody>
+                    </table>
+                `;
+            }
+        }
+
+        function loadCrmSchedule() {
+            const scheduleHtml = `
+                <div class="schedule-list">
+                    <div class="schedule-day">
+                        <h4>${new Date().toLocaleDateString('ru-RU')}</h4>
+                        <div class="appointment-item confirmed">
+                            <div class="appointment-time">10:00</div>
+                            <div class="appointment-details">
+                                <strong>Мария</strong> - Подготовка к школе
+                                <br><small>Родитель: Анна Петрова</small>
+                                <span class="status-badge confirmed">Подтверждено</span>
+                            </div>
+                        </div>
+                        <div class="appointment-item pending">
+                            <div class="appointment-time">11:30</div>
+                            <div class="appointment-details">
+                                <strong>Дмитрий</strong> - Английский
+                                <br><small>Родитель: Елена Козлова</small>
+                                <span class="status-badge pending">Ожидает</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const scheduleContent = document.getElementById('scheduleContent');
+            if (scheduleContent) {
+                scheduleContent.innerHTML = scheduleHtml;
+            }
+        }
+
+        function loadMessages() {
+            const messageCenterHtml = `
+                <div class="messages-center">
+                    <div class="message-stats">
+                        <h4>Статистика сообщений</h4>
+                        <p>Отправлено сообщений: <strong>0</strong></p>
+                        <p>Получено сообщений: <strong>0</strong></p>
+                    </div>
+                    
+                    <div class="quick-message">
+                        <h4>Быстрое сообщение</h4>
+                        <form class="quick-message-form">
+                            <div class="form-group">
+                                <label>Номер телефона получателя</label>
+                                <input type="tel" placeholder="+7 777 123 45 67" id="messagePhone">
+                            </div>
+                            <div class="form-group">
+                                <label>Текст сообщения</label>
+                                <textarea placeholder="Введите текст сообщения" id="messageText" rows="3"></textarea>
+                            </div>
+                            <button type="button" class="btn-primary" onclick="sendQuickMessage()">Отправить</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+
+            const messagesContent = document.getElementById('messagesContent');
+            if (messagesContent) {
+                messagesContent.innerHTML = messageCenterHtml;
+            }
+        }
+
+        function loadAnalytics() {
+            const analyticsHtml = `
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h4>Общая статистика</h4>
+                        <p><strong>Всего клиентов:</strong> 2</p>
+                        <p><strong>Общий доход:</strong> 84,990₸</p>
+                        <p><strong>Средняя сумма:</strong> 42,495₸</p>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Записи</h4>
+                        <p><strong>Подтверждено:</strong> 1</p>
+                        <p><strong>Ожидает:</strong> 1</p>
+                        <p><strong>Всего записей:</strong> 2</p>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Популярные услуги</h4>
+                        <p><strong>Подготовка к школе:</strong> 1 раз</p>
+                        <p><strong>Английский:</strong> 1 раз</p>
+                    </div>
+                </div>
+            `;
+
+            const analyticsContent = document.getElementById('analyticsContent');
+            if (analyticsContent) {
+                analyticsContent.innerHTML = analyticsHtml;
+            }
+        }
+
+        function loadCrmFinance() {
+            const financeHtml = `
+                <div class="finance-summary">
+                    <div class="finance-card main">
+                        <h3>Общий доход</h3>
+                        <div class="revenue-amount">84,990₸</div>
+                        <p>Всего платежей: 2</p>
+                    </div>
+                </div>
+                
+                <div class="finance-details">
+                    <h4>Доходы по услугам</h4>
+                    <div class="services-list">
+                        <div class="service-row">
+                            <span class="service-name">Подготовка к школе</span>
+                            <span class="service-amount">25,000₸</span>
+                        </div>
+                        <div class="service-row">
+                            <span class="service-name">Раннее развитие</span>
+                            <span class="service-amount">59,990₸</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const financeContent = document.getElementById('financeContent');
+            if (financeContent) {
+                financeContent.innerHTML = financeHtml;
+            }
+        }
+
+        function loadConfirmBooking() {
+            const bookingHtml = `
+                <div class="confirm-list">
+                    <div class="booking-item">
+                        <div class="booking-info">
+                            <h4>Дмитрий - Английский</h4>
+                            <p><strong>Родитель:</strong> Елена Козлова</p>
+                            <p><strong>Дата:</strong> ${new Date().toLocaleDateString('ru-RU')}</p>
+                            <p><strong>Время:</strong> 11:30</p>
+                        </div>
+                        <div class="booking-actions">
+                            <button class="btn-success" onclick="confirmBooking('Дмитрий')">
+                                <i class="fas fa-check"></i> Подтвердить
+                            </button>
+                            <button class="btn-danger" onclick="cancelBooking('Дмитрий')">
+                                <i class="fas fa-times"></i> Отменить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const content = document.getElementById('confirmBookingContent');
+            if (content) {
+                content.innerHTML = bookingHtml;
+            }
+        }
+
+        function loadBookingCalendar() {
+            const calendarHtml = `
+                <div class="calendar-view">
+                    <div class="calendar-header">
+                        <h3>Календарь записей</h3>
+                        <p>Всего записей: <strong>2</strong></p>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="calendar-day">
+                            <h4>${new Date().toLocaleDateString('ru-RU')}</h4>
+                            <div class="day-appointments">
+                                <div class="appointment-badge confirmed">
+                                    10:00 - Мария
+                                </div>
+                                <div class="appointment-badge pending">
+                                    11:30 - Дмитрий
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const content = document.getElementById('bookingCalendarContent');
+            if (content) {
+                content.innerHTML = calendarHtml;
+            }
+        }
+
+        function loadLessons() {
+            const lessonsHtml = `
+                <div class="lessons-management">
+                    <div class="lessons-stats">
+                        <div class="stat-item">
+                            <h3>2</h3>
+                            <p>Запланировано уроков</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>1</h3>
+                            <p>Проведено уроков</p>
+                        </div>
+                    </div>
+                    <div class="lessons-schedule">
+                        <h4>Расписание уроков</h4>
+                        <p>Функционал уроков интегрирован в общее расписание</p>
+                    </div>
+                </div>
+            `;
+
+            const content = document.getElementById('lessonsContent');
+            if (content) {
+                content.innerHTML = lessonsHtml;
+            }
+        }
+
+        function loadWhatsApp() {
+            const whatsappHtml = `
+                <div class="whatsapp-center">
+                    <div class="broadcast-form">
+                        <h4>Массовая рассылка</h4>
+                        <form id="broadcastForm">
+                            <div class="form-group">
+                                <label for="broadcastMessage">Сообщение для родителей</label>
+                                <textarea id="broadcastMessage" rows="4" placeholder="Введите текст сообщения для рассылки" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="selectAllParents">
+                                    Отправить всем родителям
+                                </label>
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fab fa-whatsapp"></i> Отправить в WhatsApp
+                            </button>
+                        </form>
+                    </div>
+                    <div class="broadcast-stats">
+                        <h4>Статистика рассылок</h4>
+                        <p>Отправлено сообщений: <strong>0</strong></p>
+                        <p>Доставлено: <strong>0</strong></p>
+                    </div>
+                </div>
+            `;
+
+            const content = document.getElementById('whatsappContent');
+            if (content) {
+                content.innerHTML = whatsappHtml;
+            }
+        }
+
+        function loadPayment() {
+            const paymentHtml = `
+                <div class="payment-center">
+                    <div class="receive-payment">
+                        <h4>Прием оплаты</h4>
+                        <form id="receivePaymentForm">
+                            <div class="form-group">
+                                <label for="paymentParent">Родитель</label>
+                                <input type="text" id="paymentParent" placeholder="Имя родителя" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="paymentChild">Ребенок</label>
+                                <input type="text" id="paymentChild" placeholder="Имя ребенка" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="paymentAmount">Сумма (₸)</label>
+                                <input type="number" id="paymentAmount" placeholder="15000" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="paymentService">Услуга</label>
+                                <select id="paymentService" required>
+                                    <option value="">Выберите услугу</option>
+                                    <option value="early-development">Раннее развитие</option>
+                                    <option value="preschool">Подготовка к школе</option>
+                                    <option value="art">Творчество</option>
+                                    <option value="dance">Танцы</option>
+                                    <option value="english">Английский</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-credit-card"></i> Принять оплату
+                            </button>
+                        </form>
+                    </div>
+                    <div class="payment-today">
+                        <h4>Оплаты за сегодня</h4>
+                        <div class="today-stats">
+                            <h3>84,990₸</h3>
+                            <p>Общая сумма</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const content = document.getElementById('paymentContent');
+            if (content) {
+                content.innerHTML = paymentHtml;
+            }
+        }
+
+        function loadDailyReport() {
+            const reportHtml = `
+                <div class="daily-report">
+                    <div class="report-header">
+                        <h3>Отчет за ${new Date().toLocaleDateString('ru-RU')}</h3>
+                    </div>
+                    <div class="report-grid">
+                        <div class="report-item revenue">
+                            <h3>84,990₸</h3>
+                            <p>Доход за день</p>
+                        </div>
+                        <div class="report-item payments">
+                            <h3>2</h3>
+                            <p>Количество оплат</p>
+                        </div>
+                        <div class="report-item appointments">
+                            <h3>2</h3>
+                            <p>Записей на сегодня</p>
+                        </div>
+                        <div class="report-item confirmed">
+                            <h3>1</h3>
+                            <p>Подтверждено</p>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="btn-primary" onclick="printDailyReport()">
+                            <i class="fas fa-print"></i> Распечатать отчет
+                        </button>
+                        <button class="btn-secondary" onclick="exportDailyReport()">
+                            <i class="fas fa-download"></i> Экспорт в Excel
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            const content = document.getElementById('dailyReportContent');
+            if (content) {
+                content.innerHTML = reportHtml;
+            }
+        }
+
+        function loadStaffManagement() {
+            const staffHtml = `
+                <div class="staff-management">
+                    <div class="management-actions">
+                        <button class="btn-primary" onclick="openAddUserModal()">
+                            <i class="fas fa-plus"></i> Добавить сотрудника
+                        </button>
+                    </div>
+                    
+                    <div class="staff-list">
+                        <h4>Список сотрудников (2)</h4>
+                        <div class="users-grid">
+                            <div class="staff-card">
+                                <div class="staff-info">
+                                    <h4>Raxa (Владелец)</h4>
+                                    <p><strong>Логин:</strong> Raxa</p>
+                                    <p><strong>Роль:</strong> Владелец</p>
+                                    <p><strong>Статус:</strong> <span class="status-active">Активен</span></p>
+                                </div>
+                                <div class="staff-actions">
+                                    <button class="btn-secondary" onclick="editUser('Raxa')">
+                                        <i class="fas fa-edit"></i> Редактировать
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="staff-card">
+                                <div class="staff-info">
+                                    <h4>Admin1 (Сотрудник)</h4>
+                                    <p><strong>Логин:</strong> Admin1</p>
+                                    <p><strong>Роль:</strong> Сотрудник</p>
+                                    <p><strong>Статус:</strong> <span class="status-active">Активен</span></p>
+                                </div>
+                                <div class="staff-actions">
+                                    <button class="btn-secondary" onclick="editUser('Admin1')">
+                                        <i class="fas fa-edit"></i> Редактировать
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const content = document.getElementById('staffManagementContent');
+            if (content) {
+                content.innerHTML = staffHtml;
+            }
+        }
+
+        function sendQuickMessage() {
+            const phone = document.getElementById('messagePhone')?.value;
+            const text = document.getElementById('messageText')?.value;
+            
+            if (!phone || !text) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
+            
+            alert(`Сообщение для ${phone}:\n\n"${text}"\n\n(В реальной системе здесь будет отправка)`);
+            
+            document.getElementById('messagePhone').value = '';
+            document.getElementById('messageText').value = '';
+        }
+
+        function confirmBooking(childName) {
+            alert(`Запись для ${childName} подтверждена!`);
+        }
+
+        function cancelBooking(childName) {
+            if (confirm(`Отменить запись для ${childName}?`)) {
+                alert(`Запись для ${childName} отменена`);
+            }
+        }
+
+        function printDailyReport() {
+            alert('Отчет отправлен на печать');
+        }
+
+        function exportDailyReport() {
+            alert('Отчет экспортирован в Excel');
+        }
+
+        function showClientDetails(clientId) {
+            alert('Детальная информация о клиенте будет показана в модальном окне');
         }
 
         function logout() {
