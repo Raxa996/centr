@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Диагностика GitHub Pages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #5a6fd8; }
+        .log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Диагностика GitHub Pages</h1>
+    
+    <div class="test-box">
+        <h2>📋 Информация о текущей странице</h2>
+        <div id="pageInfo" class="log"></div>
+    </div>
+    
+    <div class="test-box">
+        <h2>🔗 Проверка доступности кабинетов</h2>
+        <button onclick="checkDashboards()">Проверить все кабинеты</button>
+        <div id="dashboardCheck" class="log"></div>
+    </div>
+    
+    <div class="test-box">
+        <h2>🌐 Прямые ссылки на кабинеты</h2>
+        <button onclick="window.open('admin-dashboard.html', '_blank')">Открыть админ кабинет</button>
+        <button onclick="window.open('owner-dashboard.html', '_blank')">Открыть кабинет владельца</button>
+        <button onclick="window.open('parent-dashboard.html', '_blank')">Открыть кабинет родителя</button>
+        <button onclick="window.open('crm-dashboard.html', '_blank')">Открыть CRM кабинет</button>
+    </div>
+    
+    <div class="test-box">
+        <h2>🔧 Тест редиректа</h2>
+        <button onclick="testRedirect()">Тест редиректа в админ кабинет</button>
+        <div id="redirectTest" class="log"></div>
+    </div>
+
+    <script>
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info';
+            element.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            element.scrollTop = element.scrollHeight;
+        }
+
+        function showPageInfo() {
+            const info = `URL: ${window.location.href}
+Host: ${window.location.host}
+Protocol: ${window.location.protocol}
+Pathname: ${window.location.pathname}
+User Agent: ${navigator.userAgent}
+GitHub Pages: ${window.location.host.includes('github.io') ? 'ДА' : 'НЕТ'}`;
+            
+            document.getElementById('pageInfo').textContent = info;
+        }
+
+        async function checkDashboards() {
+            const dashboards = [
+                'admin-dashboard.html',
+                'owner-dashboard.html',
+                'parent-dashboard.html',
+                'crm-dashboard.html'
+            ];
+            
+            log('dashboardCheck', 'Проверка доступности кабинетов:', 'info');
+            
+            for (const dashboard of dashboards) {
+                try {
+                    const response = await fetch(dashboard, { method: 'HEAD' });
+                    if (response.ok) {
+                        log('dashboardCheck', `✅ ${dashboard} - доступен (${response.status})`, 'success');
+                    } else {
+                        log('dashboardCheck', `❌ ${dashboard} - недоступен (${response.status})`, 'error');
+                    }
+                } catch (error) {
+                    log('dashboardCheck', `❌ ${dashboard} - ошибка: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        function testRedirect() {
+            log('redirectTest', 'Попытка редиректа в admin-dashboard.html', 'info');
+            
+            try {
+                window.location.href = 'admin-dashboard.html';
+                log('redirectTest', 'Редирект выполнен', 'success');
+            } catch (error) {
+                log('redirectTest', `Ошибка редиректа: ${error.message}`, 'error');
+            }
+        }
+
+        // Автоматическая проверка при загрузке
+        window.addEventListener('load', () => {
+            showPageInfo();
+            checkDashboards();
+        });
+    </script>
+</body>
+</html>

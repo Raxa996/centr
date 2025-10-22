@@ -1049,18 +1049,21 @@ async function afterLoginRedirect() {
         
         // Определяем URL для редиректа
         let redirectUrl = '';
+        // Проверяем, работаем ли мы на GitHub Pages
+        const isGitHubPages = window.location.host.includes('github.io') || window.location.host.includes('github.com');
+        
         if (role === "owner") {
-            redirectUrl = "owner-dashboard.html";
-            console.log('Redirecting to owner dashboard');
+            redirectUrl = isGitHubPages ? "./owner-dashboard.html" : "owner-dashboard.html";
+            console.log('Redirecting to owner dashboard:', redirectUrl);
         } else if (role === "admin") {
-            redirectUrl = "admin-dashboard.html";
-            console.log('Redirecting to admin dashboard');
+            redirectUrl = isGitHubPages ? "./admin-dashboard.html" : "admin-dashboard.html";
+            console.log('Redirecting to admin dashboard:', redirectUrl);
         } else if (role === "teacher") {
-            redirectUrl = "crm-dashboard.html";
-            console.log('Redirecting to CRM dashboard');
+            redirectUrl = isGitHubPages ? "./crm-dashboard.html" : "crm-dashboard.html";
+            console.log('Redirecting to CRM dashboard:', redirectUrl);
         } else {
-            redirectUrl = "parent-dashboard.html";
-            console.log('Redirecting to parent dashboard');
+            redirectUrl = isGitHubPages ? "./parent-dashboard.html" : "parent-dashboard.html";
+            console.log('Redirecting to parent dashboard:', redirectUrl);
         }
         
         // Проверяем, существует ли файл
@@ -1126,12 +1129,21 @@ async function afterLoginRedirect() {
 
 // Функция для принудительного редиректа (можно вызвать из консоли)
 window.forceRedirect = function(role) {
+    const isGitHubPages = window.location.host.includes('github.io') || window.location.host.includes('github.com');
     let url = '';
+    
     switch(role) {
-        case 'owner': url = 'owner-dashboard.html'; break;
-        case 'admin': url = 'admin-dashboard.html'; break;
-        case 'teacher': url = 'crm-dashboard.html'; break;
-        default: url = 'parent-dashboard.html';
+        case 'owner': 
+            url = isGitHubPages ? './owner-dashboard.html' : 'owner-dashboard.html'; 
+            break;
+        case 'admin': 
+            url = isGitHubPages ? './admin-dashboard.html' : 'admin-dashboard.html'; 
+            break;
+        case 'teacher': 
+            url = isGitHubPages ? './crm-dashboard.html' : 'crm-dashboard.html'; 
+            break;
+        default: 
+            url = isGitHubPages ? './parent-dashboard.html' : 'parent-dashboard.html';
     }
     
     console.log('Force redirect to:', url);

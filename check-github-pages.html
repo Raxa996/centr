@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проверка GitHub Pages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .result {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .success { color: green; }
+        .error { color: red; }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover { background: #5a6fd8; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Проверка GitHub Pages</h1>
+    
+    <div class="result">
+        <h2>Информация о текущей странице:</h2>
+        <p><strong>URL:</strong> <span id="currentUrl"></span></p>
+        <p><strong>GitHub Pages:</strong> <span id="isGitHubPages"></span></p>
+        <p><strong>Host:</strong> <span id="host"></span></p>
+    </div>
+    
+    <div class="result">
+        <h2>Тест доступа к кабинетам:</h2>
+        <button onclick="testAccess()">Проверить доступ к кабинетам</button>
+        <div id="testResults"></div>
+    </div>
+    
+    <div class="result">
+        <h2>Прямые ссылки:</h2>
+        <button onclick="window.location.href='./admin-dashboard.html'">Админ кабинет (./admin-dashboard.html)</button>
+        <button onclick="window.location.href='admin-dashboard.html'">Админ кабинет (admin-dashboard.html)</button>
+    </div>
+
+    <script>
+        function showPageInfo() {
+            const url = window.location.href;
+            const host = window.location.host;
+            const isGitHubPages = host.includes('github.io') || host.includes('github.com');
+            
+            document.getElementById('currentUrl').textContent = url;
+            document.getElementById('isGitHubPages').textContent = isGitHubPages ? 'ДА' : 'НЕТ';
+            document.getElementById('host').textContent = host;
+        }
+
+        async function testAccess() {
+            const results = document.getElementById('testResults');
+            results.innerHTML = '<p>Проверка...</p>';
+            
+            const dashboards = [
+                { name: 'admin-dashboard.html', url: 'admin-dashboard.html' },
+                { name: './admin-dashboard.html', url: './admin-dashboard.html' },
+                { name: 'owner-dashboard.html', url: 'owner-dashboard.html' },
+                { name: './owner-dashboard.html', url: './owner-dashboard.html' }
+            ];
+            
+            let html = '';
+            
+            for (const dashboard of dashboards) {
+                try {
+                    const response = await fetch(dashboard.url, { method: 'HEAD' });
+                    if (response.ok) {
+                        html += `<p class="success">✅ ${dashboard.name} - доступен (${response.status})</p>`;
+                    } else {
+                        html += `<p class="error">❌ ${dashboard.name} - недоступен (${response.status})</p>`;
+                    }
+                } catch (error) {
+                    html += `<p class="error">❌ ${dashboard.name} - ошибка: ${error.message}</p>`;
+                }
+            }
+            
+            results.innerHTML = html;
+        }
+
+        // Показываем информацию при загрузке
+        window.addEventListener('load', () => {
+            showPageInfo();
+            testAccess();
+        });
+    </script>
+</body>
+</html>
