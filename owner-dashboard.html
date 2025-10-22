@@ -36,32 +36,42 @@
     </nav>
 
     <div class="dashboard">
-        <div class="container">
-            <!-- Заголовок -->
-            <div class="dashboard-header">
-                <div class="container">
-                    <div class="dashboard-nav">
-                        <button class="btn-primary active" onclick="showTab('overview')">
-                            <i class="fas fa-chart-pie"></i> Обзор
-                        </button>
-                        <button class="btn-secondary" onclick="showTab('finance')">
-                            <i class="fas fa-money-bill-wave"></i> Финансы
-                        </button>
-                        <button class="btn-secondary" onclick="showTab('records')">
-                            <i class="fas fa-list"></i> Записи
-                        </button>
-                        <button class="btn-secondary" onclick="showTab('teachers')">
-                            <i class="fas fa-chalkboard-teacher"></i> Отчет по педагогам
-                        </button>
-                        <button class="btn-secondary" onclick="showTab('attendance')">
-                            <i class="fas fa-users"></i> Посещаемость
-                        </button>
-                        <button class="btn-secondary" onclick="showTab('settings')">
-                            <i class="fas fa-cogs"></i> Настройки
-                        </button>
+        <div class="dashboard-layout">
+            <!-- Левый сайдбар с разделами владельца -->
+            <div class="sidebar">
+                <div class="sidebar-menu" id="ownerSidebar">
+                    <div class="menu-item active" onclick="showTab('overview')">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Обзор</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('finance')">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Финансы</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('records')">
+                        <i class="fas fa-list"></i>
+                        <span>Записи</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('teachers')">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span>Отчет по педагогам</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('attendance')">
+                        <i class="fas fa-users"></i>
+                        <span>Посещаемость</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('settings')">
+                        <i class="fas fa-cogs"></i>
+                        <span>Настройки</span>
+                    </div>
+                    <div class="menu-item" onclick="window.location.href='crm-dashboard.html'">
+                        <i class="fas fa-briefcase"></i>
+                        <span>CRM</span>
                     </div>
                 </div>
             </div>
+            <div class="main-content">
+                <div class="container">
 
             <!-- Контент вкладок -->
             <div id="overview" class="tab-content active">

@@ -21,8 +21,8 @@
             <div class="nav-logo">
                 <h2>🌈 Центр "Радуга"</h2>
             </div>
-            <!-- Меню в навигации -->
-            <div class="navbar-menu">
+            <!-- Меню в навигации (скрываем, т.к. переносим в левую колонку) -->
+            <div class="navbar-menu" style="display: none;">
                 <button class="nav-btn active" onclick="showTab('schedule')">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Расписание</span>
@@ -59,7 +59,33 @@
     </nav>
 
     <div class="dashboard">
-        <div class="container">
+        <div class="dashboard-layout">
+            <div class="sidebar">
+                <div class="sidebar-menu" id="adminSidebar">
+                    <div class="menu-item active" onclick="showTab('schedule')">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Расписание</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('records')">
+                        <i class="fas fa-list"></i>
+                        <span>Записи</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('students')">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Ученики</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('messages')">
+                        <i class="fas fa-comments"></i>
+                        <span>Сообщения</span>
+                    </div>
+                    <div class="menu-item" onclick="showTab('classes')">
+                        <i class="fas fa-chalkboard"></i>
+                        <span>Занятия</span>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content">
+                <div class="container">
 
             <!-- Контент вкладок -->
             <div id="schedule" class="tab-content active">
@@ -94,7 +120,9 @@
                     <div class="calendar-container">
                         <div class="calendar" id="adminCalendar">
                             <!-- Заполняется JavaScript -->
-                        </div>
+                </div>
+            </div>
+        </div>
                     </div>
 
                     <div class="schedule-list">
